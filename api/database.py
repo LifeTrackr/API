@@ -11,7 +11,7 @@ db_user = os.environ["DB_USER"]
 db_pass = os.environ["DB_PASS"]
 db_name = os.environ["DB_NAME"]
 db_host = os.environ["DB_HOST"]
-
+print(db_user)
 # Extract port from db_host if present,
 # otherwise use DB_PORT environment variable.
 host_args = db_host.split(":")
@@ -31,7 +31,7 @@ engine = create_engine(
         host=db_hostname,  # e.g. "127.0.0.1"
         port=db_port,  # e.g. 3306
         database=db_name,  # e.g. "my-database-name"
-    ), connect_args={"check_same_thread": False}
+    )
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

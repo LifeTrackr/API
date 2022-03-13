@@ -1,13 +1,10 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Text, DateTime
 from sqlalchemy.orm import relationship
-from enum import Enum
+from sqlalchemy.types import Enum
 from .database import Base
+import api.utils
+from .utils import unpack_types
 
-
-class CompanionType(Enum):
-    pl = "plant"
-    cd = "cat / dog"
-    re = "reptile"
 
 class User(Base):
     __tablename__ = "User"
@@ -18,16 +15,18 @@ class User(Base):
 
 class Companion(Base):
     __tablename__ = "Companion"
-    id = Column(Integer, primary_key=True)
+    companion = Column(Integer, primary_key=True)
     name = Column(String(10))
-    companion_type = Column(String(2), Enum(CompanionType))
+    companion_type = Column(unpack_types.get_companions())
     notes = Column(String(255))
     image = Column(String(255))
     username_id = Column(String(10), ForeignKey("User.username"))
 
 class Event(Base):
     __tablename__ = "Event"
+    companion_id = Column(Integer, ForeignKey("Companion.companion"))
     event_id = Column(Integer, primary_key=True)
+
     name = Column(String(10))
     last_complete = Column(DateTime)
     qr_code = Column(Integer)
@@ -35,5 +34,7 @@ class Event(Base):
     priority = Column(Integer)
     frequency = Column(DateTime)
     last_trigger = Column(DateTime)
-    companion_id = Column(Integer, ForeignKey("Companion.id"))
+    action = Column(unpack_types.get_events())
+
+
 

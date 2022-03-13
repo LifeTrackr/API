@@ -1,0 +1,16 @@
+plant:
+    - water
+    - fertilize
+    - repot
+dog:
+    - feed
+    - walk
+    - groom
+cat:
+    - feed
+    - play
+
+reptile:
+  - feed
+  - mist
+  - clean
