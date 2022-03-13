@@ -6,4 +6,5 @@ To setup environment:
    1. `sudo apt-get install python3-pymysql`
    2. `pip install -r requirements.txt`
    3. `source venv/bin/activate`
+   4. Ask Nova for .env file
 3. At this point, you should be setup!

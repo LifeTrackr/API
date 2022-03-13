@@ -51,3 +51,9 @@ def create_companion_for_user(username: str, item: schemas.CompanionCreate, db: 
 def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_companion(db, skip=skip, limit=limit)
     return items
+
+
+@app.post(
+    "/companions/event")  # TODO: add response model, schemas.Event, error: `value is not a valid list (type=type_error.list)`
+def create_event(companion_id: int, item: schemas.EventCreate, db: Session = Depends(get_db)):
+    return crud.create_event(db=db, item=item, companion_id=companion_id)

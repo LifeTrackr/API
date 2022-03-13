@@ -25,4 +25,3 @@ def get_events():
     return Enum(*events, name="event_types")
 
 # get_companions("../types/companion_events.yaml")
-print(get_events())

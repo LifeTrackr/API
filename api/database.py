@@ -11,7 +11,6 @@ db_user = os.environ["DB_USER"]
 db_pass = os.environ["DB_PASS"]
 db_name = os.environ["DB_NAME"]
 db_host = os.environ["DB_HOST"]
-print(db_user)
 # Extract port from db_host if present,
 # otherwise use DB_PORT environment variable.
 host_args = db_host.split(":")
