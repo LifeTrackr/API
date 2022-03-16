@@ -1,15 +1,20 @@
+import sys
 from typing import List
 
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
 from sqlalchemy.orm import Session
 
 from . import crud, models, schemas
+from .crud import get_token
 from .database import SessionLocal, engine
+from .models import User
+from .utils.auth import get_current_user, oauth2_scheme
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
 
 # Dependency
 def get_db():
@@ -50,10 +55,20 @@ def create_companion_for_user(username: str, item: schemas.CompanionCreate, db: 
 @app.get("/companions/", response_model=List[schemas.Companion])
 def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_companion(db, skip=skip, limit=limit)
-    return items
+    # return items
 
+@app.get("/users/me")
+async def read_users_me(current_user: User = Depends(get_current_user)):
+    return current_user
 
 @app.post(
     "/companions/event")  # TODO: add response model, schemas.Event, error: `value is not a valid list (type=type_error.list)`
-def create_event(companion_id: int, item: schemas.EventCreate, db: Session = Depends(get_db)):
+def create_event(companion_id: int, item: schemas.EventCreate, token: str = Depends(oauth2_scheme),
+                 db: Session = Depends(get_db)):
     return crud.create_event(db=db, item=item, companion_id=companion_id)
+
+@app.post("/token")
+async def login(form_data: OAuth2PasswordRequestForm = Depends(),  db: Session = Depends(get_db)):
+    return get_token(db=db, form_data=form_data)
+
+print(app.openapi(), file=open('openapi.json', 'w'))

@@ -64,7 +64,7 @@ class UserCreate(UserBase):
 
 
 class User(UserBase):
-    username: str
+    hashed_password: str
     is_active: bool
     Companions: List[Companion] = []
 

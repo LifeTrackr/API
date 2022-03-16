@@ -8,3 +8,7 @@ To setup environment:
    3. `source venv/bin/activate`
    4. Ask Nova for .env file
 3. At this point, you should be setup!
+
+### Run
+
+`uvicorn api.main:app --reload`

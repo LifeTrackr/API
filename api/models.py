@@ -9,7 +9,7 @@ from datetime import datetime
 class User(Base):
     __tablename__ = "User"
     username = Column(String(10), primary_key=True)
-    password = Column(String(64))
+    hashed_password = Column(String(64))
     is_active = Column(Boolean)
     companion = relationship("Companion")
 
