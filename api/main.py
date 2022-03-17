@@ -55,7 +55,7 @@ def create_companion_for_user(username: str, item: schemas.CompanionCreate, db: 
 @app.get("/companions/", response_model=List[schemas.Companion])
 def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_companion(db, skip=skip, limit=limit)
-    # return items
+    return items
 
 @app.get("/users/me")
 async def read_users_me(current_user: User = Depends(get_current_user)):
