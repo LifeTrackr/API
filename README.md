@@ -9,6 +9,15 @@ To setup environment:
    4. Ask Nova for .env file
 3. At this point, you should be setup!
 
+
+### Docs
+[Swagger Docs](https://lifetrackr.github.io/API/)
+
+#### If running locally
+[localhost:8000/docs](localhost:8000/docs)
+
 ### Run
 
 `uvicorn api.main:app --reload`
+
+
