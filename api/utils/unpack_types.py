@@ -1,9 +1,12 @@
+import os
+
 import yaml
 from sqlalchemy import Enum
-import os
+
 from definitions import ROOT_DIR
 
 companion_events = os.path.join(ROOT_DIR, "api/types/companion_events.yaml")
+
 
 def _unpack():
     with open(companion_events, "r") as stream:
@@ -13,9 +16,11 @@ def _unpack():
             return exc
     return [Enum(*loaded[key], name=key) for key in loaded]
 
+
 def get_companions():
     companion_names = [enum.name for enum in _unpack()]
     return Enum(*companion_names, name="companion_types")
+
 
 def get_events():
     events = []

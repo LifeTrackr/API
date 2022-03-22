@@ -9,7 +9,6 @@ dog:
 cat:
     - feed
     - play
-
 reptile:
   - feed
   - mist
