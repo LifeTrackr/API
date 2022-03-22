@@ -1,7 +1,10 @@
+from datetime import datetime
 from enum import Enum
 from typing import List, Optional
+
 from pydantic import BaseModel
-from datetime import date, datetime, time, timedelta
+
+from api.utils.unpack_types import get_events
 
 
 class CompanionType(str, Enum):
@@ -36,12 +39,15 @@ class PriorityType(str, Enum):
     h = "h"  # high
 
 
+EventTypes = get_events()
+
+
 class EventBase(BaseModel):
     name: str
     notes: str
     priority: PriorityType
     frequency: datetime
-    action: str
+    action: EventTypes.values_callable
 
 
 class EventCreate(EventBase):
@@ -70,3 +76,15 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
+
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

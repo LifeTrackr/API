@@ -1,24 +1,27 @@
 import os
 
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
 
 load_dotenv()  # take environment variables from .env.
-
-db_user = os.environ["DB_USER"]
-db_pass = os.environ["DB_PASS"]
-db_name = os.environ["DB_NAME"]
-db_host = os.environ["DB_HOST"]
+try:
+    db_user = os.environ["DB_USER"]
+    db_pass = os.environ["DB_PASS"]
+    db_name = os.environ["DB_NAME"]
+    db_host = os.environ["DB_HOST"]
+except KeyError:
+    raise KeyError("Error: Missing env file")
 # Extract port from db_host if present,
 # otherwise use DB_PORT environment variable.
 host_args = db_host.split(":")
 if len(host_args) == 1:
-    db_hostname = db_host
-    db_port = os.environ["DB_PORT"]
+    db_hostname, db_port = db_host, os.environ["DB_PORT"]
 elif len(host_args) == 2:
     db_hostname, db_port = host_args[0], int(host_args[1])
+else:
+    raise KeyError("Error: Host args > 2")
 
 engine = create_engine(
     # Equivalent URL:
