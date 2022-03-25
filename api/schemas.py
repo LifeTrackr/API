@@ -4,7 +4,18 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from api.utils.unpack_types import get_events
+
+class CompanionEvents(str, Enum):
+    water = "water"
+    fertilize = "fertilize"
+    repot = "repot"
+    feed = "feed"
+    walk = "walk"
+    groom = "groom"
+    play = "play"
+    # feed_ = "feed"
+    mist = "mist"
+    clean = "clean"
 
 
 class CompanionType(str, Enum):
@@ -39,19 +50,15 @@ class PriorityType(str, Enum):
     h = "h"  # high
 
 
-EventTypes = get_events()
-
-
 class EventBase(BaseModel):
     name: str
     notes: str
     priority: PriorityType
     frequency: datetime
-    action: EventTypes.values_callable
 
 
 class EventCreate(EventBase):
-    pass
+    action: CompanionEvents
 
 
 class Event(EventBase):

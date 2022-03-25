@@ -9,8 +9,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from starlette import status
 
-from api import schemas, models
-from api.crud import get_user, db_add
+from api import models
 from api.schemas import User, TokenData
 from definitions import get_db
 
@@ -32,6 +31,10 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
+def get_user(db: Session, username: str):
+    return db.query(models.User).filter(models.User.username == username).first()
+
+
 def authenticate_user(username: str, password: str, db: Session = Depends(get_db)):
     user = get_user(db, username)
     if not user:
@@ -48,8 +51,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
@@ -91,8 +93,3 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
-
-
-def create_user(db: Session, user: schemas.UserCreate):
-    db_user = models.User(username=user.username, hashed_password=get_password_hash(user.password), is_active=True)
-    return db_add(db, db_user)

@@ -1,5 +1,6 @@
 import os
 
+import sqlalchemy.exc
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -11,6 +12,7 @@ try:
     db_pass = os.environ["DB_PASS"]
     db_name = os.environ["DB_NAME"]
     db_host = os.environ["DB_HOST"]
+    production = os.getenv("PROD")
 except KeyError:
     raise KeyError("Error: Missing env file")
 # Extract port from db_host if present,
@@ -23,18 +25,34 @@ elif len(host_args) == 2:
 else:
     raise KeyError("Error: Host args > 2")
 
-engine = create_engine(
-    # Equivalent URL:
-    # mysql+pymysql://<db_user>:<db_pass>@<db_host>:<db_port>/<db_name>
-    engine.url.URL.create(
-        drivername="mysql+pymysql",
-        username=db_user,  # e.g. "my-database-user"
-        password=db_pass,  # e.g. "my-database-password"
-        host=db_hostname,  # e.g. "127.0.0.1"
-        port=db_port,  # e.g. 3306
-        database=db_name,  # e.g. "my-database-name"
-    )
-)
+engine = create_engine(engine.url.URL.create(drivername="mysql+pymysql", username=db_user, password=db_pass,
+                                             host=db_hostname, port=db_port, database=db_name))
+
+
+def db_add(db, item):
+    db.add(item)
+    try:
+        db.commit()
+    except sqlalchemy.exc.DataError as e:
+        msg = {"error": "Database validation error"}
+        if production:
+            msg["db_msg"] = e.statement
+        return msg
+    db.refresh(item)
+    return item
+
+
+def modify_session(session, item, db):
+    try:
+        session.update(item)
+    except sqlalchemy.exc.DataError as e:
+        msg = {"error": "Database validation error"}
+        if production:
+            msg["db_msg"] = e.statement
+        return msg
+    db.commit()
+    return {"modified": True}
+
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
