@@ -1,3 +1,4 @@
+from sqlalchemy import delete
 from sqlalchemy.orm import Session
 
 from api import models, schemas
@@ -42,3 +43,8 @@ def create_event(db: Session, item: schemas.EventCreate, companion_id: int):
 def modify_event(db: Session, item: schemas.EventBase, event_id: int):
     db_event = db.query(models.Event).filter(models.Event.event_id == event_id)
     return modify_session(db_event, item.dict(), db)
+
+
+def delete_event(db: Session, event_id: int):
+    db.execute(delete(models.Event).where(models.Event.companion_id == event_id))
+    db.commit()

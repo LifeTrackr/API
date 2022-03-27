@@ -2,11 +2,13 @@ import os
 
 import sqlalchemy.exc
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, engine
+from sqlalchemy import create_engine, engine, delete
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 
-load_dotenv()  # take environment variables from .env.
+from api import models
+
+load_dotenv()
 try:
     db_user = os.environ["DB_USER"]
     db_pass = os.environ["DB_PASS"]
@@ -15,8 +17,6 @@ try:
     production = os.getenv("PROD")
 except KeyError:
     raise KeyError("Error: Missing env file")
-# Extract port from db_host if present,
-# otherwise use DB_PORT environment variable.
 host_args = db_host.split(":")
 if len(host_args) == 1:
     db_hostname, db_port = db_host, os.environ["DB_PORT"]
@@ -52,6 +52,19 @@ def modify_session(session, item, db):
         return msg
     db.commit()
     return {"modified": True}
+
+
+def delete_row(db: Session, table: models, row: models, row_id: int):
+    stmt = delete(table).where(row == row_id)
+    try:
+        db.execute(stmt)
+        db.commit()
+    except sqlalchemy.exc.DataError as e:
+        msg = {"error": "Database validation error"}
+        if production:
+            msg["db_msg"] = e.statement
+        return msg
+    return {"deleted": True}
 
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
