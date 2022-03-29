@@ -2,6 +2,7 @@ from os import getenv
 from typing import List
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from uvicorn import run
 
@@ -14,6 +15,15 @@ from definitions import get_db
 
 models.Base.metadata.create_all(bind=database.engine)
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+    allow_credentials=True,
+)
+print("hello")
 
 
 @app.post("/users/", response_model=schemas.User, tags=["User"])
