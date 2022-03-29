@@ -29,6 +29,7 @@ class Companion(Base):
 class Event(Base):
     __tablename__ = "Event"
     companion_id = Column(Integer, ForeignKey("Companion.companion"))
+    username_id = Column(String(10), ForeignKey("User.username"))
     event_id = Column(Integer, primary_key=True)
     name = Column(String(10))
     last_complete = Column(DateTime)

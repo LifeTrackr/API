@@ -6,6 +6,61 @@
   },
   'paths': {
     '/users/': {
+      'get': {
+        'tags': [
+          'User'
+        ],
+        'summary': 'Read Users',
+        'operationId': 'read_users_users__get',
+        'parameters': [
+          {
+            'required': False,
+            'schema': {
+              'title': 'Skip',
+              'type': 'integer',
+              'default': 0
+            },
+            'name': 'skip',
+            'in': 'query'
+          },
+          {
+            'required': False,
+            'schema': {
+              'title': 'Limit',
+              'type': 'integer',
+              'default': 100
+            },
+            'name': 'limit',
+            'in': 'query'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  'title': 'Response Read Users Users  Get',
+                  'type': 'array',
+                  'items': {
+                    '$ref': '#/components/schemas/User'
+                  }
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        }
+      },
       'post': {
         'tags': [
           'User'
@@ -47,12 +102,12 @@
       }
     },
     '/users/modify': {
-      'post': {
+      'put': {
         'tags': [
           'User'
         ],
         'summary': 'Modify User',
-        'operationId': 'modify_user_users_modify_post',
+        'operationId': 'modify_user_users_modify_put',
         'parameters': [
           {
             'required': True,
@@ -116,58 +171,12 @@
       }
     },
     '/users/companions/': {
-      'post': {
-        'tags': [
-          'Companion'
-        ],
-        'summary': 'Create Companion For User',
-        'operationId': 'create_companion_for_user_users_companions__post',
-        'requestBody': {
-          'content': {
-            'application/json': {
-              'schema': {
-                '$ref': '#/components/schemas/CompanionCreate'
-              }
-            }
-          },
-          'required': True
-        },
-        'responses': {
-          '200': {
-            'description': 'Successful Response',
-            'content': {
-              'application/json': {
-                'schema': {
-                  '$ref': '#/components/schemas/Companion'
-                }
-              }
-            }
-          },
-          '422': {
-            'description': 'Validation Error',
-            'content': {
-              'application/json': {
-                'schema': {
-                  '$ref': '#/components/schemas/HTTPValidationError'
-                }
-              }
-            }
-          }
-        },
-        'security': [
-          {
-            'OAuth2PasswordBearer': []
-          }
-        ]
-      }
-    },
-    '/users/companions/update': {
-      'post': {
+      'put': {
         'tags': [
           'Companion'
         ],
         'summary': 'Modify Companion',
-        'operationId': 'modify_companion_users_companions_update_post',
+        'operationId': 'modify_companion_users_companions__put',
         'parameters': [
           {
             'required': True,
@@ -195,6 +204,50 @@
             'content': {
               'application/json': {
                 'schema': {}
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      },
+      'post': {
+        'tags': [
+          'Companion'
+        ],
+        'summary': 'Create Companion For User',
+        'operationId': 'create_companion_for_user_users_companions__post',
+        'requestBody': {
+          'content': {
+            'application/json': {
+              'schema': {
+                '$ref': '#/components/schemas/CompanionCreate'
+              }
+            }
+          },
+          'required': True
+        },
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/Companion'
+                }
               }
             }
           },
@@ -315,16 +368,74 @@
               }
             }
           }
-        }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
       }
     },
-    '/companions/event': {
+    '/companions/event/': {
+      'put': {
+        'tags': [
+          'Event'
+        ],
+        'summary': 'Modify Event',
+        'operationId': 'modify_event_companions_event__put',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'Event Id',
+              'type': 'integer'
+            },
+            'name': 'event_id',
+            'in': 'query'
+          }
+        ],
+        'requestBody': {
+          'content': {
+            'application/json': {
+              'schema': {
+                '$ref': '#/components/schemas/EventBase'
+              }
+            }
+          },
+          'required': True
+        },
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {}
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      },
       'post': {
         'tags': [
           'Event'
         ],
         'summary': 'Create Event',
-        'operationId': 'create_event_companions_event_post',
+        'operationId': 'create_event_companions_event__post',
         'parameters': [
           {
             'required': True,
@@ -373,13 +484,13 @@
         ]
       }
     },
-    '/companions/event/update': {
-      'post': {
+    '/companions/event/last_complete': {
+      'put': {
         'tags': [
           'Event'
         ],
-        'summary': 'Modify Event',
-        'operationId': 'modify_event_companions_event_update_post',
+        'summary': 'Update Last Complete',
+        'operationId': 'update_last_complete_companions_event_last_complete_put',
         'parameters': [
           {
             'required': True,
@@ -391,16 +502,6 @@
             'in': 'query'
           }
         ],
-        'requestBody': {
-          'content': {
-            'application/json': {
-              'schema': {
-                '$ref': '#/components/schemas/EventBase'
-              }
-            }
-          },
-          'required': True
-        },
         'responses': {
           '200': {
             'description': 'Successful Response',

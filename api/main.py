@@ -1,3 +1,4 @@
+from datetime import datetime
 from os import getenv
 from typing import List
 from fastapi import Depends, FastAPI, HTTPException
@@ -26,6 +27,11 @@ app.add_middleware(
 print("hello")
 
 
+@app.get("/users/", response_model=List[schemas.User], tags=["User"])
+def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    users = crud.get_users(db, skip=skip, limit=limit)
+    return users
+
 @app.post("/users/", response_model=schemas.User, tags=["User"])
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = auth.get_user(db, username=user.username)
@@ -34,7 +40,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return api.crud.create_user(db=db, user=user)
 
 
-@app.post("/users/modify", tags=["User"])
+@app.put("/users/modify", tags=["User"])
 def modify_user(new_password: str, db: Session = Depends(get_db),
                 current_user: schemas.User = Depends(auth.get_current_user)):
     return crud.modify_user(db=db, username=current_user.username, new_password=new_password)
@@ -51,7 +57,7 @@ def create_companion_for_user(item: schemas.CompanionCreate, db: Session = Depen
     return crud.create_user_companion(db=db, item=item, username=current_user.username)
 
 
-@app.post("/users/companions/update", tags=["Companion"])
+@app.put("/users/companions/", tags=["Companion"])
 def modify_companion(companion_id: int, item: schemas.CompanionCreate, db: Session = Depends(get_db),
                      current_user: schemas.User = Depends(auth.get_current_user)):
     return crud.modify_companion(db=db, companion_id=companion_id, item=item)
@@ -65,21 +71,34 @@ def delete_companion(companion_id: int, current_user: schemas.User = Depends(aut
 
 
 @app.get("/companions/", response_model=List[schemas.Companion], tags=["Companion"])
-def read_companions(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    items = crud.get_companion(db, skip=skip, limit=limit)
-    return items
+def read_companions(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
+                    current_user: schemas.User = Depends(auth.get_current_user)):
+    return crud.get_companions(db=db, current_user=current_user, skip=skip, limit=limit)
 
 
-@app.post("/companions/event", tags=["Event"])
-def create_event(companion_id: int, item: schemas.EventCreate, token: str = Depends(auth.get_current_user),
+# @app.get("/companions/event/", tags=["Event"])
+# def get_events(db: Session = Depends(get_db), current_user:)
+
+
+@app.post("/companions/event/", tags=["Event"])
+def create_event(companion_id: int, item: schemas.EventCreate,
+                 current_user: schemas.User = Depends(auth.get_current_user),
                  db: Session = Depends(get_db)):
-    return crud.create_event(db=db, item=item, companion_id=companion_id)
+    return crud.create_event(db=db, item=item, companion_id=companion_id, username_id=current_user.username)
 
 
-@app.post("/companions/event/update", tags=["Event"])
-def modify_event(event_id: int, item: schemas.EventBase, token: str = Depends(auth.get_current_user),
+@app.put("/companions/event/", tags=["Event"])
+def modify_event(event_id: int, item: schemas.EventBase, current_user: schemas.User = Depends(auth.get_current_user),
                  db: Session = Depends(get_db)):
     return crud.modify_event(db=db, item=item, event_id=event_id)
+
+
+@app.put("/companions/event/last_complete", tags=["Event"])
+def update_last_complete(event_id: int, current_user: schemas.User = Depends(auth.get_current_user),
+                         db: Session = Depends(get_db)):
+    e = models.Event()
+    e.last_complete = datetime.now()
+    return crud.modify_event(db=db, item=e, event_id=event_id)
 
 
 @app.delete("/companions/event/{event_id}", tags=["Event"])
