@@ -10,7 +10,7 @@
         'tags': [
           'User'
         ],
-        'summary': 'Read Users',
+        'summary': 'Get all users in database',
         'operationId': 'read_users_users__get',
         'parameters': [
           {
@@ -65,7 +65,7 @@
         'tags': [
           'User'
         ],
-        'summary': 'Create User',
+        'summary': 'Make a new user',
         'operationId': 'create_user_users__post',
         'requestBody': {
           'content': {
@@ -106,7 +106,7 @@
         'tags': [
           'User'
         ],
-        'summary': 'Modify User',
+        'summary': 'Change user password',
         'operationId': 'modify_user_users_modify_put',
         'parameters': [
           {
@@ -151,7 +151,7 @@
         'tags': [
           'User'
         ],
-        'summary': 'Test Token',
+        'summary': 'Test Bearer Token',
         'operationId': 'test_token_users_token_test_get',
         'responses': {
           '200': {
@@ -175,7 +175,7 @@
         'tags': [
           'Companion'
         ],
-        'summary': 'Modify Companion',
+        'summary': 'Modify a companion',
         'operationId': 'modify_companion_users_companions__put',
         'parameters': [
           {
@@ -228,7 +228,7 @@
         'tags': [
           'Companion'
         ],
-        'summary': 'Create Companion For User',
+        'summary': 'Create a new companion',
         'operationId': 'create_companion_for_user_users_companions__post',
         'requestBody': {
           'content': {
@@ -274,7 +274,7 @@
         'tags': [
           'Companion'
         ],
-        'summary': 'Delete Companion',
+        'summary': 'Delete a companion',
         'operationId': 'delete_companion_users_companions__companion_id__delete',
         'parameters': [
           {
@@ -319,7 +319,7 @@
         'tags': [
           'Companion'
         ],
-        'summary': 'Read Companions',
+        'summary': 'Get all Companions for user',
         'operationId': 'read_companions_companions__get',
         'parameters': [
           {
@@ -377,11 +377,65 @@
       }
     },
     '/companions/event/': {
+      'get': {
+        'tags': [
+          'Event'
+        ],
+        'summary': 'Get all events for User',
+        'operationId': 'get_events_companions_event__get',
+        'parameters': [
+          {
+            'required': False,
+            'schema': {
+              'title': 'Skip',
+              'type': 'integer',
+              'default': 0
+            },
+            'name': 'skip',
+            'in': 'query'
+          },
+          {
+            'required': False,
+            'schema': {
+              'title': 'Limit',
+              'type': 'integer',
+              'default': 100
+            },
+            'name': 'limit',
+            'in': 'query'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {}
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      },
       'put': {
         'tags': [
           'Event'
         ],
-        'summary': 'Modify Event',
+        'summary': 'Modify event',
         'operationId': 'modify_event_companions_event__put',
         'parameters': [
           {
@@ -434,7 +488,7 @@
         'tags': [
           'Event'
         ],
-        'summary': 'Create Event',
+        'summary': 'Create a new event for companion',
         'operationId': 'create_event_companions_event__post',
         'parameters': [
           {
@@ -489,7 +543,8 @@
         'tags': [
           'Event'
         ],
-        'summary': 'Update Last Complete',
+        'summary': 'Complete event',
+        'description': 'Update `last_trigger` field to current time ',
         'operationId': 'update_last_complete_companions_event_last_complete_put',
         'parameters': [
           {
@@ -534,7 +589,7 @@
         'tags': [
           'Event'
         ],
-        'summary': 'Delete Event',
+        'summary': 'Delete event',
         'operationId': 'delete_event_companions_event__event_id__delete',
         'parameters': [
           {
