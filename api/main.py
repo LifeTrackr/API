@@ -1,9 +1,11 @@
 from datetime import datetime
+from datetime import timezone
 from os import getenv
 from typing import List
+
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from uvicorn import run
 
@@ -11,20 +13,11 @@ import api.crud
 import api.database
 from api import crud, models, schemas
 from api import database
-from api.utils import auth
+from api.utils import auth, event_time
 from definitions import get_db
 
 models.Base.metadata.create_all(bind=database.engine)
 app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-    allow_credentials=True,
-)
-print("hello")
 
 
 @app.get("/users/", response_model=List[schemas.User], tags=["User"], summary="Get all users in database")
@@ -41,13 +34,13 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return api.crud.create_user(db=db, user=user)
 
 
-@app.put("/users/modify", tags=["User"], summary="Change user password")
+@app.put("/users/modify/", tags=["User"], summary="Change user password")
 def modify_user(new_password: str, db: Session = Depends(get_db),
                 current_user: schemas.User = Depends(auth.get_current_user)):
     return crud.modify_user(db=db, username=current_user.username, new_password=new_password)
 
 
-@app.get("/users/token/test", tags=["User"], summary="Test Bearer Token")
+@app.get("/users/token/test/", tags=["User"], summary="Test Bearer Token")
 async def test_token(current_user: schemas.User = Depends(auth.get_current_user)):
     return current_user
 
@@ -64,7 +57,7 @@ def modify_companion(companion_id: int, item: schemas.CompanionCreate, db: Sessi
     return crud.modify_companion(db=db, companion_id=companion_id, item=item)
 
 
-@app.delete("/users/companions/{companion_id}", tags=["Companion"], summary="Delete a companion")
+@app.delete("/users/companions/{companion_id}/", tags=["Companion"], summary="Delete a companion")
 def delete_companion(companion_id: int, current_user: schemas.User = Depends(auth.get_current_user),
                      db: Session = Depends(get_db), ):
     database.delete_row(db=db, table=models.Event, row=models.Event.companion_id, row_id=companion_id)
@@ -88,7 +81,8 @@ def get_events(skip: int = 0, limit: int = 100, current_user: schemas.User = Dep
 def create_event(companion_id: int, item: schemas.EventCreate,
                  current_user: schemas.User = Depends(auth.get_current_user),
                  db: Session = Depends(get_db)):
-    return crud.create_event(db=db, item=item, companion_id=companion_id, username_id=current_user.username)
+    return crud.create_event(db=db, item=item, companion_id=companion_id, username_id=current_user.username,
+                             current_time=datetime.now(timezone.utc))
 
 
 @app.put("/companions/event/", tags=["Event"], summary="Modify event")
@@ -97,20 +91,35 @@ def modify_event(event_id: int, item: schemas.EventBase, current_user: schemas.U
     return crud.modify_event(db=db, item=item, event_id=event_id)
 
 
-@app.put("/companions/event/last_complete", tags=["Event"], summary="Complete event",
+@app.put("/companions/event/last_complete/", tags=["Event"], summary="Complete event",
          description="Update `last_trigger` field to current time ")
 def update_last_complete(event_id: int, current_user: schemas.User = Depends(auth.get_current_user),
                          db: Session = Depends(get_db)):
     db_event = db.query(models.Event).filter(models.Event.event_id == event_id)
-    return crud.modify_session(session=db_event, item={"last_trigger": datetime.now()}, db=db)
+    frequency = db_event.first().frequency
+    now = datetime.now(timezone.utc)
+    item = {"update": True}
+    return crud.modify_session(session=db_event, item=item, db=db)
 
 
-@app.delete("/companions/event/{event_id}", tags=["Event"], summary="Delete event")
+@app.get("/companions/event/triggered/{event_id}/", tags=["Event"], summary="Check if event is triggered")
+def is_event_triggered(event_id: int, current_user: schemas.User = Depends(auth.get_current_user),
+                       db: Session = Depends(get_db)):
+    db_event = db.query(models.Event).filter(models.Event.event_id == event_id).first()
+    db_time = db.query(func.now()).first()
+    for d in db_time:
+        time = d
+    return {"event_id": event_id,
+            "triggered": event_time.check_trigger(delta=db_event.frequency, db_time=time,
+                                                  last_trigger=db_event.last_trigger)}
+
+
+@app.delete("/companions/event/{event_id}/", tags=["Event"], summary="Delete event")
 def delete_event(event_id: int, token: str = Depends(auth.get_current_user), db: Session = Depends(get_db)):
     return database.delete_row(db=db, table=models.Event, row=models.Event.event_id, row_id=event_id)
 
 
-@app.post("/token", response_model=schemas.Token, tags=["Authentication"], summary="Login")
+@app.post("/token/", response_model=schemas.Token, tags=["Authentication"], summary="Login")
 def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
     return auth.login_for_access_token(form_data=form_data, db=db)
 

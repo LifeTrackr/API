@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import timedelta
 from enum import Enum
 from typing import List, Optional
 
@@ -54,7 +54,7 @@ class EventBase(BaseModel):
     name: str
     notes: str
     priority: PriorityType
-    frequency: datetime
+    frequency: timedelta
 
 
 class EventCreate(EventBase):

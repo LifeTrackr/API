@@ -1,6 +1,7 @@
 from datetime import datetime
+from datetime import timezone
 
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Interval
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Enum
 
@@ -32,10 +33,11 @@ class Event(Base):
     username_id = Column(String(10), ForeignKey("User.username"))
     event_id = Column(Integer, primary_key=True)
     name = Column(String(10))
-    last_complete = Column(DateTime)
+    next_trigger = Column(DateTime)
     qr_code = Column(Integer, default=0)
     notes = Column(String(255))
     priority = Column(Enum(PriorityType, name="priorities"))  # l:low, h:high
-    frequency = Column(DateTime)
-    last_trigger = Column(DateTime, default=datetime.now())
+    frequency = Column(Interval)
+    last_trigger = Column(DateTime, default=datetime.now(timezone.utc))
     action = Column(Enum(CompanionEvents, name="events"))
+    update = Column(Boolean)

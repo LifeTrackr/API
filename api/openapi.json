@@ -101,13 +101,13 @@
         }
       }
     },
-    '/users/modify': {
+    '/users/modify/': {
       'put': {
         'tags': [
           'User'
         ],
         'summary': 'Change user password',
-        'operationId': 'modify_user_users_modify_put',
+        'operationId': 'modify_user_users_modify__put',
         'parameters': [
           {
             'required': True,
@@ -146,13 +146,13 @@
         ]
       }
     },
-    '/users/token/test': {
+    '/users/token/test/': {
       'get': {
         'tags': [
           'User'
         ],
         'summary': 'Test Bearer Token',
-        'operationId': 'test_token_users_token_test_get',
+        'operationId': 'test_token_users_token_test__get',
         'responses': {
           '200': {
             'description': 'Successful Response',
@@ -269,13 +269,13 @@
         ]
       }
     },
-    '/users/companions/{companion_id}': {
+    '/users/companions/{companion_id}/': {
       'delete': {
         'tags': [
           'Companion'
         ],
         'summary': 'Delete a companion',
-        'operationId': 'delete_companion_users_companions__companion_id__delete',
+        'operationId': 'delete_companion_users_companions__companion_id___delete',
         'parameters': [
           {
             'required': True,
@@ -538,14 +538,14 @@
         ]
       }
     },
-    '/companions/event/last_complete': {
+    '/companions/event/last_complete/': {
       'put': {
         'tags': [
           'Event'
         ],
         'summary': 'Complete event',
         'description': 'Update `last_trigger` field to current time ',
-        'operationId': 'update_last_complete_companions_event_last_complete_put',
+        'operationId': 'update_last_complete_companions_event_last_complete__put',
         'parameters': [
           {
             'required': True,
@@ -584,13 +584,13 @@
         ]
       }
     },
-    '/companions/event/{event_id}': {
-      'delete': {
+    '/companions/event/triggered/{event_id}/': {
+      'get': {
         'tags': [
           'Event'
         ],
-        'summary': 'Delete event',
-        'operationId': 'delete_event_companions_event__event_id__delete',
+        'summary': 'Check if event is triggered',
+        'operationId': 'is_event_triggered_companions_event_triggered__event_id___get',
         'parameters': [
           {
             'required': True,
@@ -629,18 +629,63 @@
         ]
       }
     },
-    '/token': {
+    '/companions/event/{event_id}/': {
+      'delete': {
+        'tags': [
+          'Event'
+        ],
+        'summary': 'Delete event',
+        'operationId': 'delete_event_companions_event__event_id___delete',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'Event Id',
+              'type': 'integer'
+            },
+            'name': 'event_id',
+            'in': 'path'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {}
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/token/': {
       'post': {
         'tags': [
           'Authentication'
         ],
         'summary': 'Login',
-        'operationId': 'login_token_post',
+        'operationId': 'login_token__post',
         'requestBody': {
           'content': {
             'application/x-www-form-urlencoded': {
               'schema': {
-                '$ref': '#/components/schemas/Body_login_token_post'
+                '$ref': '#/components/schemas/Body_login_token__post'
               }
             }
           },
@@ -673,8 +718,8 @@
   },
   'components': {
     'schemas': {
-      'Body_login_token_post': {
-        'title': 'Body_login_token_post',
+      'Body_login_token__post': {
+        'title': 'Body_login_token__post',
         'required': [
           'username',
           'password'
@@ -823,8 +868,8 @@
           },
           'frequency': {
             'title': 'Frequency',
-            'type': 'string',
-            'format': 'date-time'
+            'type': 'number',
+            'format': 'time-delta'
           }
         }
       },
@@ -852,8 +897,8 @@
           },
           'frequency': {
             'title': 'Frequency',
-            'type': 'string',
-            'format': 'date-time'
+            'type': 'number',
+            'format': 'time-delta'
           },
           'action': {
             '$ref': '#/components/schemas/CompanionEvents'
