@@ -25,9 +25,11 @@ elif len(host_args) == 2:
 else:
     raise KeyError("Error: Host args > 2")
 
-engine = create_engine(engine.url.URL.create(drivername="postgresql+psycopg2", username=db_user, password=db_pass,
-                                             host=db_hostname, port=db_port, database=db_name))
-
+try:
+    engine = create_engine(os.environ.get('DATABASE_URL'))
+except Exception:
+    engine = create_engine(engine.url.URL.create(drivername="postgresql+psycopg2", username=db_user, password=db_pass,
+                                                 host=db_hostname, port=db_port, database=db_name))
 
 def db_add(db: Session, item):
     db.add(item)
