@@ -41,8 +41,8 @@ def get_events(db: Session, current_user: schemas.User, skip: int = 0, limit: in
     return db_event.offset(skip).limit(limit).all()
 
 
-def create_event(db: Session, item: schemas.EventCreate, companion_id: int, username_id: str):
-    db_event = models.Event(**item.dict(), companion_id=companion_id, username_id=username_id)
+def create_event(db: Session, item: schemas.EventCreate, companion_id: int, username_id: str, current_time):
+    db_event = models.Event(**item.dict(), companion_id=companion_id, username_id=username_id, update=True)
     return db_add(db, db_event)
 
 
