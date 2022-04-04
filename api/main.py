@@ -96,8 +96,6 @@ def modify_event(event_id: int, item: schemas.EventBase, current_user: schemas.U
 def update_last_complete(event_id: int, current_user: schemas.User = Depends(auth.get_current_user),
                          db: Session = Depends(get_db)):
     db_event = db.query(models.Event).filter(models.Event.event_id == event_id)
-    frequency = db_event.first().frequency
-    now = datetime.now(timezone.utc)
     item = {"update": True}
     return crud.modify_session(session=db_event, item=item, db=db)
 
