@@ -2,6 +2,7 @@ import os
 
 import sqlalchemy.exc
 from dotenv import load_dotenv
+from fastapi import HTTPException
 from sqlalchemy import create_engine, engine, delete
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
@@ -25,8 +26,10 @@ elif len(host_args) == 2:
 else:
     raise KeyError("Error: Host args > 2")
 try:
-    db_url = os.environ.get('DATABASE_URL').replace('postgres://', 'postgresql://')
-    engine = create_engine(db_url)
+    db_url = os.environ.get('DATABASE_URL')
+    if not db_url:
+        db_url = os.environ.get('CONNECTION_STRING')
+    engine = create_engine(db_url.replace('postgres://', 'postgresql://'))
 except Exception as e:
     print(e)
     engine = create_engine(engine.url.URL.create(drivername="postgresql+psycopg2", username=db_user, password=db_pass,
@@ -39,8 +42,11 @@ def db_add(db: Session, item):
     except Exception as e:
         msg = {"error": "Database validation error"}
         if production:
-            msg["db_msg"] = e.statement
-        return msg
+            msg["db_msg"] = e.args[0]
+        raise HTTPException(
+            status_code=500,
+            detail=msg,
+        )
     db.refresh(item)
     return item
 
