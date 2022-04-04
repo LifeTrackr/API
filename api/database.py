@@ -36,7 +36,7 @@ def db_add(db: Session, item):
     db.add(item)
     try:
         db.commit()
-    except sqlalchemy.exc as e:
+    except Exception as e:
         msg = {"error": "Database validation error"}
         if production:
             msg["db_msg"] = e.statement
