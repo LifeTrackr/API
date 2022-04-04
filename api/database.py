@@ -25,8 +25,7 @@ elif len(host_args) == 2:
 else:
     raise KeyError("Error: Host args > 2")
 try:
-    db_url = os.environ.get('DATABASE_URL')
-    print(db_url)
+    db_url = os.environ.get('DATABASE_URL?sslmode=require').replace('postgres://', 'postgresql://')
     engine = create_engine(db_url)
 except Exception as e:
     print(e)
