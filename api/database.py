@@ -27,6 +27,7 @@ else:
 
 try:
     engine = create_engine(os.environ.get('DATABASE_URL'))
+    print("here")
 except Exception:
     engine = create_engine(engine.url.URL.create(drivername="postgresql+psycopg2", username=db_user, password=db_pass,
                                                  host=db_hostname, port=db_port, database=db_name))
