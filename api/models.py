@@ -11,7 +11,8 @@ from .schemas import CompanionEvents, CompanionType, PriorityType
 
 class User(Base):
     __tablename__ = "User"
-    username = Column(String(10), primary_key=True)
+    user_id = Column(Integer, primary_key=True)
+    username = Column(String(10))
     hashed_password = Column(String(64))
     is_active = Column(Boolean)
     companion = relationship("Companion")
@@ -24,13 +25,13 @@ class Companion(Base):
     companion_type = Column(Enum(CompanionType, name="companion types"))
     notes = Column(String(255))
     image = Column(String(255))
-    username_id = Column(String(10), ForeignKey("User.username"))
+    user_id = Column(Integer, ForeignKey("User.user_id"))
 
 
 class Event(Base):
     __tablename__ = "Event"
     companion_id = Column(Integer, ForeignKey("Companion.companion"))
-    username_id = Column(String(10), ForeignKey("User.username"))
+    user_id = Column(Integer, ForeignKey("User.user_id"))
     event_id = Column(Integer, primary_key=True)
     name = Column(String(10))
     next_trigger = Column(DateTime)

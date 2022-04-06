@@ -18,7 +18,7 @@ def create_user(db: Session, user: schemas.UserCreate):
 def modify_user(db: Session, username: str, new_password: str):
     hashed_password = get_password_hash(new_password)
     db_user = db.query(models.User).filter(models.User.username == username)
-    return modify_session(session=db_user, item={"hashed_password": hashed_password}, db=db)
+    return modify_session(session=db_user, item={"hashed_password": hashed_password}, db=db, by=username)
 
 
 def get_companions(db: Session, current_user: schemas.User, skip: int = 0, limit: int = 100):
@@ -32,7 +32,7 @@ def modify_companion(db: Session, companion_id: int, item: schemas.CompanionCrea
 
 
 def create_user_companion(db: Session, item: schemas.CompanionCreate, username: str):
-    db_companion = models.Companion(**item.dict(), username_id=username)
+    db_companion = models.Companion(**item.dict(), username=username)
     return db_add(db, db_companion)
 
 

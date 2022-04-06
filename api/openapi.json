@@ -124,7 +124,9 @@
             'description': 'Successful Response',
             'content': {
               'application/json': {
-                'schema': {}
+                'schema': {
+                  '$ref': '#/components/schemas/ModifiedRow'
+                }
               }
             }
           },
@@ -158,9 +160,15 @@
             'description': 'Successful Response',
             'content': {
               'application/json': {
-                'schema': {}
+                'schema': {
+                  '$ref': '#/components/schemas/TestBearer'
+                }
               }
             }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'detail': 'Not authenticated'
           }
         },
         'security': [
@@ -538,14 +546,14 @@
         ]
       }
     },
-    '/companions/event/last_complete/': {
+    '/companions/event/last_complete/{event_id}/': {
       'put': {
         'tags': [
           'Event'
         ],
         'summary': 'Complete event',
         'description': 'Update `last_trigger` field to current time ',
-        'operationId': 'update_last_complete_companions_event_last_complete__put',
+        'operationId': 'update_last_complete_companions_event_last_complete__event_id___put',
         'parameters': [
           {
             'required': True,
@@ -554,7 +562,7 @@
               'type': 'integer'
             },
             'name': 'event_id',
-            'in': 'query'
+            'in': 'path'
           }
         ],
         'responses': {
@@ -599,6 +607,51 @@
               'type': 'integer'
             },
             'name': 'event_id',
+            'in': 'path'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {}
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/companions/event/triggered/{user_id}/': {
+      'get': {
+        'tags': [
+          'Event'
+        ],
+        'summary': 'Check all event per user is triggered',
+        'operationId': 'all_event_triggered_companions_event_triggered__user_id___get',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'User Id',
+              'type': 'string'
+            },
+            'name': 'user_id',
             'in': 'path'
           }
         ],
@@ -918,6 +971,24 @@
           }
         }
       },
+      'ModifiedRow': {
+        'title': 'ModifiedRow',
+        'required': [
+          'by',
+          'modified'
+        ],
+        'type': 'object',
+        'properties': {
+          'by': {
+            'title': 'By',
+            'type': 'string'
+          },
+          'modified': {
+            'title': 'Modified',
+            'type': 'boolean'
+          }
+        }
+      },
       'PriorityType': {
         'title': 'PriorityType',
         'enum': [
@@ -927,6 +998,28 @@
         ],
         'type': 'string',
         'description': 'An enumeration.'
+      },
+      'TestBearer': {
+        'title': 'TestBearer',
+        'required': [
+          'operation',
+          'result'
+        ],
+        'type': 'object',
+        'properties': {
+          'operation': {
+            'title': 'Operation',
+            'type': 'string'
+          },
+          'result': {
+            'title': 'Result',
+            'type': 'boolean'
+          }
+        },
+        'example1': {
+          'operation': 'token for {username} is active and authorized',
+          'result': True
+        }
       },
       'Token': {
         'title': 'Token',
@@ -950,8 +1043,8 @@
         'title': 'User',
         'required': [
           'username',
-          'hashed_password',
-          'is_active'
+          'is_active',
+          'user_id'
         ],
         'type': 'object',
         'properties': {
@@ -959,13 +1052,13 @@
             'title': 'Username',
             'type': 'string'
           },
-          'hashed_password': {
-            'title': 'Hashed Password',
-            'type': 'string'
-          },
           'is_active': {
             'title': 'Is Active',
             'type': 'boolean'
+          },
+          'user_id': {
+            'title': 'User Id',
+            'type': 'integer'
           },
           'Companions': {
             'title': 'Companions',

@@ -77,8 +77,9 @@ class UserCreate(UserBase):
 
 
 class User(UserBase):
-    hashed_password: str
+    # hashed_password: str
     is_active: bool
+    user_id: int
     Companions: List[Companion] = []
 
     class Config:
@@ -95,3 +96,23 @@ class TokenData(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+class ModifiedRow(BaseModel):
+    by: str
+    modified: bool
+
+
+class ResponseMessage(BaseModel):
+    operation: str
+    result: bool
+
+
+class TestBearer(ResponseMessage):
+    class Config:
+        schema_extra = {
+            "example1": {
+                "operation": "token for {username} is active and authorized",
+                "result": True or False
+            }
+        }

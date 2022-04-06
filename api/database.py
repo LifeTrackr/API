@@ -35,6 +35,7 @@ except Exception as e:
     engine = create_engine(engine.url.URL.create(drivername="postgresql+psycopg2", username=db_user, password=db_pass,
                                                  host=db_hostname, port=db_port, database=db_name))
 
+
 def db_add(db: Session, item):
     db.add(item)
     try:
@@ -51,7 +52,7 @@ def db_add(db: Session, item):
     return item
 
 
-def modify_session(session, item, db: Session):
+def modify_session(session, item, db: Session, by):
     try:
         session.update(item)
     except sqlalchemy.exc.DataError as e:
@@ -60,7 +61,7 @@ def modify_session(session, item, db: Session):
             msg["db_msg"] = e.statement
         return msg
     db.commit()
-    return {"modified": True}
+    return {"by": str(by), "modified": True}
 
 
 def delete_row(db: Session, table: models, row: models, row_id: int):

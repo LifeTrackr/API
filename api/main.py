@@ -34,15 +34,17 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return api.crud.create_user(db=db, user=user)
 
 
-@app.put("/users/modify/", tags=["User"], summary="Change user password")
+@app.put("/users/modify/", tags=["User"], response_model=schemas.ModifiedRow, summary="Change user password")
 def modify_user(new_password: str, db: Session = Depends(get_db),
                 current_user: schemas.User = Depends(auth.get_current_user)):
     return crud.modify_user(db=db, username=current_user.username, new_password=new_password)
 
 
-@app.get("/users/token/test/", tags=["User"], summary="Test Bearer Token")
-async def test_token(current_user: schemas.User = Depends(auth.get_current_user)):
-    return current_user
+@app.get("/users/token/test/", tags=["User"], response_model=schemas.TestBearer, summary="Test Bearer Token",
+         responses={401: {"detail": "Not authenticated"}})
+def test_token(current_user: schemas.User = Depends(auth.get_current_user)):
+    return {"operation": f"token for {current_user.username} is active and authorized",
+            "result": current_user.is_active}
 
 
 @app.post("/users/companions/", response_model=schemas.Companion, tags=["Companion"], summary="Create a new companion")
@@ -91,7 +93,7 @@ def modify_event(event_id: int, item: schemas.EventBase, current_user: schemas.U
     return crud.modify_event(db=db, item=item, event_id=event_id)
 
 
-@app.put("/companions/event/last_complete/", tags=["Event"], summary="Complete event",
+@app.put("/companions/event/last_complete/{event_id}/", tags=["Event"], summary="Complete event",
          description="Update `last_trigger` field to current time ")
 def update_last_complete(event_id: int, current_user: schemas.User = Depends(auth.get_current_user),
                          db: Session = Depends(get_db)):
@@ -107,9 +109,14 @@ def is_event_triggered(event_id: int, current_user: schemas.User = Depends(auth.
     db_time = db.query(func.now()).first()
     for d in db_time:
         time = d
-    return {"event_id": event_id,
-            "triggered": event_time.check_trigger(delta=db_event.frequency, db_time=time,
-                                                  last_trigger=db_event.last_trigger)}
+    return {"event_id": event_id, "triggered": event_time.check_trigger(delta=db_event.frequency, db_time=time,
+                                                                        last_trigger=db_event.last_trigger)}
+
+
+@app.get("/companions/event/triggered/{user_id}/", tags=["Event"], summary="Check all event per user is triggered")
+def all_event_triggered(user_id: str, current_user: schemas.User = Depends(auth.get_current_user),
+                        db: Session = Depends(get_db)):
+    pass
 
 
 @app.delete("/companions/event/{event_id}/", tags=["Event"], summary="Delete event")
