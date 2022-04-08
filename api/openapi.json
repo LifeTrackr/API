@@ -125,7 +125,17 @@
             'content': {
               'application/json': {
                 'schema': {
-                  '$ref': '#/components/schemas/ModifiedRow'
+                  '$ref': '#/components/schemas/UpdateUser'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
                 }
               }
             }
@@ -168,7 +178,13 @@
           },
           '401': {
             'description': 'Unauthorized',
-            'detail': 'Not authenticated'
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
           }
         },
         'security': [
@@ -211,7 +227,29 @@
             'description': 'Successful Response',
             'content': {
               'application/json': {
-                'schema': {}
+                'schema': {
+                  '$ref': '#/components/schemas/UpdateCompanion'
+                }
+              }
+            }
+          },
+          '403': {
+            'description': 'Database validation error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/ModifyRowError'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
               }
             }
           },
@@ -259,6 +297,16 @@
               }
             }
           },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
           '422': {
             'description': 'Validation Error',
             'content': {
@@ -300,7 +348,19 @@
             'description': 'Successful Response',
             'content': {
               'application/json': {
-                'schema': {}
+                'schema': {
+                  '$ref': '#/components/schemas/DeleteCompanion'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
               }
             }
           },
@@ -366,6 +426,16 @@
               }
             }
           },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
           '422': {
             'description': 'Validation Error',
             'content': {
@@ -418,7 +488,23 @@
             'description': 'Successful Response',
             'content': {
               'application/json': {
-                'schema': {}
+                'schema': {
+                  'title': 'Response Get Events Companions Event  Get',
+                  'type': 'array',
+                  'items': {
+                    '$ref': '#/components/schemas/Event'
+                  }
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
               }
             }
           },
@@ -471,7 +557,19 @@
             'description': 'Successful Response',
             'content': {
               'application/json': {
-                'schema': {}
+                'schema': {
+                  '$ref': '#/components/schemas/UpdateEvent'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
               }
             }
           },
@@ -524,7 +622,19 @@
             'description': 'Successful Response',
             'content': {
               'application/json': {
-                'schema': {}
+                'schema': {
+                  '$ref': '#/components/schemas/Event'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
               }
             }
           },
@@ -552,7 +662,7 @@
           'Event'
         ],
         'summary': 'Complete event',
-        'description': 'Update `last_trigger` field to current time ',
+        'description': 'Update `last_trigger` field to current time',
         'operationId': 'update_last_complete_companions_event_last_complete__event_id___put',
         'parameters': [
           {
@@ -570,7 +680,19 @@
             'description': 'Successful Response',
             'content': {
               'application/json': {
-                'schema': {}
+                'schema': {
+                  '$ref': '#/components/schemas/UpdateEvent'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
               }
             }
           },
@@ -615,16 +737,28 @@
             'description': 'Successful Response',
             'content': {
               'application/json': {
-                'schema': {}
+                'schema': {
+                  '$ref': '#/components/schemas/EventTriggered'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
               }
             }
           },
           '422': {
-            'description': 'Validation Error',
+            'description': 'Unprocessable Entity',
             'content': {
               'application/json': {
                 'schema': {
-                  '$ref': '#/components/schemas/HTTPValidationError'
+                  '$ref': '#/components/schemas/ModifyRowError'
                 }
               }
             }
@@ -661,6 +795,16 @@
             'content': {
               'application/json': {
                 'schema': {}
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
               }
             }
           },
@@ -705,7 +849,19 @@
             'description': 'Successful Response',
             'content': {
               'application/json': {
-                'schema': {}
+                'schema': {
+                  '$ref': '#/components/schemas/DeleteEvent'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
               }
             }
           },
@@ -771,6 +927,17 @@
   },
   'components': {
     'schemas': {
+      'AuthError': {
+        'title': 'AuthError',
+        'type': 'object',
+        'properties': {
+          'detail': {
+            'title': 'Detail',
+            'type': 'string',
+            'default': 'Not authenticated'
+          }
+        }
+      },
       'Body_login_token__post': {
         'title': 'Body_login_token__post',
         'required': [
@@ -814,7 +981,7 @@
           'companion_type',
           'notes',
           'image',
-          'username_id',
+          'user_id',
           'companion'
         ],
         'type': 'object',
@@ -834,8 +1001,8 @@
             'title': 'Image',
             'type': 'string'
           },
-          'username_id': {
-            'title': 'Username Id',
+          'user_id': {
+            'title': 'User Id',
             'type': 'string'
           },
           'companion': {
@@ -898,6 +1065,127 @@
         'type': 'string',
         'description': 'An enumeration.'
       },
+      'DeleteCompanion': {
+        'title': 'DeleteCompanion',
+        'type': 'object',
+        'properties': {
+          'row_id': {
+            'title': 'Row Id',
+            'type': 'string',
+            'default': 1
+          },
+          'operation': {
+            'title': 'Operation',
+            'type': 'string',
+            'default': 'delete'
+          },
+          'rows_modified': {
+            'title': 'Rows Modified',
+            'type': 'integer',
+            'default': 1
+          },
+          'table': {
+            'title': 'Table',
+            'type': 'string',
+            'default': 'Companion'
+          }
+        }
+      },
+      'DeleteEvent': {
+        'title': 'DeleteEvent',
+        'type': 'object',
+        'properties': {
+          'row_id': {
+            'title': 'Row Id',
+            'type': 'string',
+            'default': 1
+          },
+          'operation': {
+            'title': 'Operation',
+            'type': 'string',
+            'default': 'delete'
+          },
+          'rows_modified': {
+            'title': 'Rows Modified',
+            'type': 'integer',
+            'default': 1
+          },
+          'table': {
+            'title': 'Table',
+            'type': 'string',
+            'default': 'Event'
+          }
+        }
+      },
+      'Event': {
+        'title': 'Event',
+        'required': [
+          'name',
+          'notes',
+          'priority',
+          'frequency',
+          'companion_id',
+          'event_id',
+          'next_trigger',
+          'qr_code',
+          'last_trigger',
+          'user_id',
+          'action'
+        ],
+        'type': 'object',
+        'properties': {
+          'name': {
+            'title': 'Name',
+            'type': 'string'
+          },
+          'notes': {
+            'title': 'Notes',
+            'type': 'string'
+          },
+          'priority': {
+            '$ref': '#/components/schemas/PriorityType'
+          },
+          'frequency': {
+            'title': 'Frequency',
+            'type': 'number',
+            'format': 'time-delta'
+          },
+          'companion_id': {
+            'title': 'Companion Id',
+            'type': 'integer'
+          },
+          'event_id': {
+            'title': 'Event Id',
+            'type': 'integer'
+          },
+          'next_trigger': {
+            'title': 'Next Trigger',
+            'type': 'string',
+            'format': 'date-time'
+          },
+          'qr_code': {
+            'title': 'Qr Code',
+            'type': 'integer'
+          },
+          'last_trigger': {
+            'title': 'Last Trigger',
+            'type': 'string',
+            'format': 'date-time'
+          },
+          'update': {
+            'title': 'Update',
+            'type': 'boolean',
+            'default': False
+          },
+          'user_id': {
+            'title': 'User Id',
+            'type': 'integer'
+          },
+          'action': {
+            '$ref': '#/components/schemas/CompanionEvents'
+          }
+        }
+      },
       'EventBase': {
         'title': 'EventBase',
         'required': [
@@ -958,6 +1246,24 @@
           }
         }
       },
+      'EventTriggered': {
+        'title': 'EventTriggered',
+        'required': [
+          'event_id',
+          'triggered'
+        ],
+        'type': 'object',
+        'properties': {
+          'event_id': {
+            'title': 'Event Id',
+            'type': 'integer'
+          },
+          'triggered': {
+            'title': 'Triggered',
+            'type': 'boolean'
+          }
+        }
+      },
       'HTTPValidationError': {
         'title': 'HTTPValidationError',
         'type': 'object',
@@ -971,21 +1277,16 @@
           }
         }
       },
-      'ModifiedRow': {
-        'title': 'ModifiedRow',
+      'ModifyRowError': {
+        'title': 'ModifyRowError',
         'required': [
-          'by',
-          'modified'
+          'message'
         ],
         'type': 'object',
         'properties': {
-          'by': {
-            'title': 'By',
+          'message': {
+            'title': 'Message',
             'type': 'string'
-          },
-          'modified': {
-            'title': 'Modified',
-            'type': 'boolean'
           }
         }
       },
@@ -1002,23 +1303,19 @@
       'TestBearer': {
         'title': 'TestBearer',
         'required': [
-          'operation',
           'result'
         ],
         'type': 'object',
         'properties': {
           'operation': {
             'title': 'Operation',
-            'type': 'string'
+            'type': 'string',
+            'default': 'token for {username} is active and authorized'
           },
           'result': {
             'title': 'Result',
             'type': 'boolean'
           }
-        },
-        'example1': {
-          'operation': 'token for {username} is active and authorized',
-          'result': True
         }
       },
       'Token': {
@@ -1036,6 +1333,84 @@
           'token_type': {
             'title': 'Token Type',
             'type': 'string'
+          }
+        }
+      },
+      'UpdateCompanion': {
+        'title': 'UpdateCompanion',
+        'type': 'object',
+        'properties': {
+          'row_id': {
+            'title': 'Row Id',
+            'type': 'string',
+            'default': 1
+          },
+          'operation': {
+            'title': 'Operation',
+            'type': 'string',
+            'default': 'update'
+          },
+          'rows_modified': {
+            'title': 'Rows Modified',
+            'type': 'integer',
+            'default': 1
+          },
+          'table': {
+            'title': 'Table',
+            'type': 'string',
+            'default': 'Companion'
+          }
+        }
+      },
+      'UpdateEvent': {
+        'title': 'UpdateEvent',
+        'type': 'object',
+        'properties': {
+          'row_id': {
+            'title': 'Row Id',
+            'type': 'string',
+            'default': 1
+          },
+          'operation': {
+            'title': 'Operation',
+            'type': 'string',
+            'default': 'update'
+          },
+          'rows_modified': {
+            'title': 'Rows Modified',
+            'type': 'integer',
+            'default': 1
+          },
+          'table': {
+            'title': 'Table',
+            'type': 'string',
+            'default': 'Event'
+          }
+        }
+      },
+      'UpdateUser': {
+        'title': 'UpdateUser',
+        'type': 'object',
+        'properties': {
+          'row_id': {
+            'title': 'Row Id',
+            'type': 'string',
+            'default': 1
+          },
+          'operation': {
+            'title': 'Operation',
+            'type': 'string',
+            'default': 'update'
+          },
+          'rows_modified': {
+            'title': 'Rows Modified',
+            'type': 'integer',
+            'default': 1
+          },
+          'table': {
+            'title': 'Table',
+            'type': 'string',
+            'default': 'User'
           }
         }
       },

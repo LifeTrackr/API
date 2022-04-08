@@ -2,12 +2,10 @@ import os
 
 import sqlalchemy.exc
 from dotenv import load_dotenv
-from fastapi import HTTPException
-from sqlalchemy import create_engine, engine, delete
+from sqlalchemy import create_engine, engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-
-from api import models
+from starlette.responses import JSONResponse
 
 load_dotenv()
 try:
@@ -15,7 +13,7 @@ try:
     db_pass = os.environ["DB_PASS"]
     db_name = os.environ["DB_NAME"]
     db_host = os.environ["DB_HOST"]
-    production = os.getenv("PROD")
+    production = True if os.getenv("PROD") is True else False
 except KeyError:
     raise KeyError("Error: Missing env file")
 host_args = db_host.split(":")
@@ -42,39 +40,34 @@ def db_add(db: Session, item):
         db.commit()
     except Exception as e:
         msg = {"error": "Database validation error"}
-        if production:
+        if not production:
             msg["db_msg"] = e.args[0]
-        raise HTTPException(
-            status_code=500,
-            detail=msg,
-        )
+
     db.refresh(item)
     return item
 
 
-def modify_session(session, item, db: Session, by):
-    try:
-        session.update(item)
-    except sqlalchemy.exc.DataError as e:
-        msg = {"error": "Database validation error"}
-        if production:
-            msg["db_msg"] = e.statement
-        return msg
-    db.commit()
-    return {"by": str(by), "modified": True}
+def get_op(stmt):
+    if stmt.is_update:
+        return "update"
+    if stmt.is_delete:
+        return "delete"
+    return "Unknown"
 
 
-def delete_row(db: Session, table: models, row: models, row_id: int):
-    stmt = delete(table).where(row == row_id)
+def modify_row(stmt, _id, table, db: Session):
     try:
-        db.execute(stmt)
-        db.commit()
+        result = db.execute(stmt)
     except sqlalchemy.exc.DataError as e:
-        msg = {"error": "Database validation error"}
-        if production:
-            msg["db_msg"] = e.statement
-        return msg
-    return {"deleted": True}
+        message = {"error": "Database validation error"}
+        if not production:
+            message["db_msg"] = e.statement
+        return JSONResponse(
+            status_code=403,
+            content=message,
+        )
+    return {"table": table.__tablename__, "row_id": str(_id),
+            "operation": get_op(stmt), "rows_modified": result.rowcount}
 
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

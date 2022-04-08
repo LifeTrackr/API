@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from enum import Enum
 from typing import List, Optional
 
@@ -13,7 +13,6 @@ class CompanionEvents(str, Enum):
     walk = "walk"
     groom = "groom"
     play = "play"
-    # feed_ = "feed"
     mist = "mist"
     clean = "clean"
 
@@ -37,7 +36,7 @@ class CompanionCreate(CompanionBase):
 
 
 class Companion(CompanionBase):
-    username_id: str
+    user_id: str
     companion: int
 
     class Config:
@@ -63,6 +62,13 @@ class EventCreate(EventBase):
 
 class Event(EventBase):
     companion_id: int
+    event_id: int
+    next_trigger: datetime
+    qr_code: int
+    last_trigger: datetime
+    update: bool = False
+    user_id: int
+    action: CompanionEvents
 
     class Config:
         orm_mode = True
@@ -77,7 +83,6 @@ class UserCreate(UserBase):
 
 
 class User(UserBase):
-    # hashed_password: str
     is_active: bool
     user_id: int
     Companions: List[Companion] = []
@@ -98,9 +103,45 @@ class Token(BaseModel):
     token_type: str
 
 
-class ModifiedRow(BaseModel):
-    by: str
-    modified: bool
+class ModifyRow(BaseModel):
+    row_id: str = 1
+    operation: str
+    rows_modified: int = 1
+
+
+class UpdateUser(ModifyRow):
+    table: str = "User"
+    operation: str = "update"
+
+
+class DeleteUser(UpdateUser):
+    operation: str = "delete"
+
+
+class UpdateCompanion(ModifyRow):
+    table: str = "Companion"
+    operation: str = "update"
+
+
+class DeleteCompanion(UpdateCompanion):
+    operation: str = "delete"
+
+
+class UpdateEvent(ModifyRow):
+    table: str = "Event"
+    operation: str = "update"
+
+
+class DeleteEvent(UpdateEvent):
+    operation: str = "delete"
+
+
+class AuthError(BaseModel):
+    detail: str = "Not authenticated"
+
+
+class ModifyRowError(BaseModel):
+    message: str
 
 
 class ResponseMessage(BaseModel):
@@ -108,11 +149,10 @@ class ResponseMessage(BaseModel):
     result: bool
 
 
+class EventTriggered(BaseModel):
+    event_id: int
+    triggered: bool
+
+
 class TestBearer(ResponseMessage):
-    class Config:
-        schema_extra = {
-            "example1": {
-                "operation": "token for {username} is active and authorized",
-                "result": True or False
-            }
-        }
+    operation: str = "token for {username} is active and authorized"
