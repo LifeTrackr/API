@@ -16,9 +16,10 @@ def create_user(db: Session, user: schemas.UserCreate):
 
 
 def modify_user(db: Session, username: str, new_password: str):
-    hashed_password = get_password_hash(new_password)
-    db_user = db.query(models.User).filter(models.User.username == username)
-    return modify_session(session=db_user, item={"hashed_password": hashed_password}, db=db, by=username)
+    hash_pw = get_password_hash(new_password)
+    stmt = (update(models.User).values({"hashed_password": hash_pw}).where(models.User.username == username))
+
+    return modify_row(stmt=stmt, _id=username, table=models.User, db=db)
 
 
 def get_companions(db: Session, current_user: schemas.User, skip: int = 0, limit: int = 100):
@@ -38,7 +39,7 @@ def create_user_companion(db: Session, item: schemas.CompanionCreate, user_id: i
 
 
 def get_events(db: Session, current_user: schemas.User, skip: int = 0, limit: int = 100):
-    db_event = db.query(models.Event).filter(models.Event.username_id == current_user.username)
+    db_event = db.query(models.Event).filter(models.Event.user_id == current_user.user_id)
     return db_event.offset(skip).limit(limit).all()
 
 

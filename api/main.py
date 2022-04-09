@@ -121,11 +121,10 @@ def is_event_triggered(event_id: int, _: schemas.User = Depends(auth.get_current
                                                                         last_trigger=db_event.last_trigger)}
 
 
-@app.get("/companions/event/triggered/{user_id}/", tags=["Event"], summary="Check all event per user is triggered",
-         responses={401: {"model": schemas.AuthError}})
-def all_event_triggered(user_id: str, current_user: schemas.User = Depends(auth.get_current_user),
-                        db: Session = Depends(get_db)):
-    pass
+# @app.get("/companions/event/triggered/{user_id}/", tags=["Event"], summary="Check all event per user is triggered",
+#          responses={401: {"model": schemas.AuthError}})
+# def all_event_triggered(user_id: str, _: schemas.User = Depends(auth.get_current_user), db: Session = Depends(get_db)):
+#     pass
 
 
 @app.delete("/companions/event/{event_id}/", tags=["Event"], summary="Delete event", response_model=schemas.DeleteEvent,
