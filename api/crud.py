@@ -23,7 +23,7 @@ def modify_user(db: Session, username: str, new_password: str):
 
 
 def get_companions(db: Session, current_user: schemas.User, skip: int = 0, limit: int = 100):
-    return db.query(models.Companion).filter(models.Companion.user_id == current_user.username).offset(skip).limit(
+    return db.query(models.Companion).filter(models.Companion.user_id == current_user.user_id).offset(skip).limit(
         limit).all()
 
 
