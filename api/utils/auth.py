@@ -17,7 +17,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 SECRET_KEY = os.environ["DB_PASS"]
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_DAYS = 2
+ACCESS_TOKEN_EXPIRE_DAYS = 365
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * (24 * ACCESS_TOKEN_EXPIRE_DAYS)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

@@ -15,10 +15,10 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_add(db, db_user)
 
 
-def modify_user(db: Session, username: str, new_password: str):
+def modify_user(db: Session, user_id: int, new_password: str):
     hash_pw = get_password_hash(new_password)
-    stmt = (update(models.User).values({"hashed_password": hash_pw}).where(models.User.username == username))
-    return modify_row(stmt=stmt, _id=username, table=models.User, db=db)
+    stmt = update(models.User).where(models.User.user_id == user_id).values(hashed_password=hash_pw)
+    return modify_row(stmt=stmt, _id=user_id, table=models.User, db=db)
 
 
 def get_companions(db: Session, current_user: schemas.User, skip: int = 0, limit: int = 100):
@@ -27,7 +27,7 @@ def get_companions(db: Session, current_user: schemas.User, skip: int = 0, limit
 
 
 def modify_companion(db: Session, companion_id: int, item: schemas.CompanionCreate):
-    stmt = (update(models.Companion).values(**item.dict()).where(models.Companion.companion == companion_id))
+    stmt = (update(models.Companion).where(models.Companion.companion == companion_id).values(**item.dict()))
 
     return modify_row(stmt=stmt, _id=companion_id, table=models.Companion, db=db)
 
@@ -48,7 +48,7 @@ def create_event(db: Session, item: schemas.EventCreate, companion_id: int, user
 
 
 def modify_event(db: Session, item: schemas.EventBase, event_id: int):
-    stmt = (update(models.Event).values(**item.dict()).where(models.Event.event_id == event_id))
+    stmt = (update(models.Event).where(models.Event.event_id == event_id).values(**item.dict()))
     return modify_row(stmt=stmt, _id=event_id, table=models.Event, db=db)
 
 

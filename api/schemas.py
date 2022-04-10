@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 from enum import Enum
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 
 class CompanionEvents(str, Enum):
@@ -54,6 +54,10 @@ class EventBase(BaseModel):
     notes: str
     priority: PriorityType
     frequency: timedelta
+
+    @validator("frequency")
+    def convert_status(cls, frequency):
+        return frequency * 60  # convert seconds to minutes
 
 
 class EventCreate(EventBase):

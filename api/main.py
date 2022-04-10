@@ -12,7 +12,7 @@ import api.crud
 import api.database
 from api import crud, models, schemas
 from api import database
-from api.utils import auth, event_time
+from api.utils import auth
 from definitions import get_db
 
 models.Base.metadata.create_all(bind=database.engine)
@@ -37,7 +37,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
          responses={401: {"model": schemas.AuthError}})
 def modify_user(new_password: str, db: Session = Depends(get_db),
                 current_user: schemas.User = Depends(auth.get_current_user)):
-    return crud.modify_user(db=db, username=current_user.username, new_password=new_password)
+    return crud.modify_user(db=db, user_id=current_user.user_id, new_password=new_password)
 
 
 @app.get("/users/token/test/", tags=["User"], response_model=schemas.TestBearer, summary="Test Bearer Token",
@@ -115,9 +115,8 @@ def is_event_triggered(event_id: int, _: schemas.User = Depends(auth.get_current
     if db_event is None:
         return JSONResponse(status_code=422, content={"message": "Invalid ID"})
     db_time = db.query(func.now()).first()
-    for time in db_time:
-        return {"event_id": event_id, "triggered": event_time.check_trigger(delta=db_event.frequency, db_time=time,
-                                                                            last_trigger=db_event.last_trigger)}
+    for db_time in db_time:
+        return {"event_id": event_id, "triggered": db_time > (db_event.last_trigger + db_event.frequency)}
 
 
 @app.get("/companions/event/triggered/{user_id}/", tags=["Event"], summary="Check all event per user is triggered",

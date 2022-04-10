@@ -70,5 +70,5 @@ def modify_row(stmt, _id, table, db: Session):
             "operation": get_op(stmt), "rows_modified": result.rowcount}
 
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=True, autoflush=False, bind=engine)
 Base = declarative_base()
