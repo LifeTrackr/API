@@ -85,7 +85,7 @@ def get_events(skip: int = 0, limit: int = 100, current_user: schemas.User = Dep
 
 
 @app.post("/companions/event/", tags=["Event"], response_model=schemas.Event,
-          summary="Create a new event for companion", responses={401: {"model": schemas.AuthError}})
+          summary="Create a new `event` for `companion`", responses={401: {"model": schemas.AuthError}})
 def create_event(companion_id: int, item: schemas.EventCreate, db: Session = Depends(get_db),
                  current_user: schemas.User = Depends(auth.get_current_user)):
     return crud.create_event(db=db, item=item, companion_id=companion_id, username_id=current_user.user_id)
@@ -112,19 +112,18 @@ def update_last_complete(event_id: int, _: schemas.User = Depends(auth.get_curre
                                                            422: {"model": schemas.ModifyRowError}})
 def is_event_triggered(event_id: int, _: schemas.User = Depends(auth.get_current_user), db: Session = Depends(get_db)):
     db_event = db.query(models.Event).filter(models.Event.event_id == event_id).first()
-    db_time = db.query(func.now()).first()
-    for d in db_time:
-        time = d
     if db_event is None:
         return JSONResponse(status_code=422, content={"message": "Invalid ID"})
-    return {"event_id": event_id, "triggered": event_time.check_trigger(delta=db_event.frequency, db_time=time,
-                                                                        last_trigger=db_event.last_trigger)}
+    db_time = db.query(func.now()).first()
+    for time in db_time:
+        return {"event_id": event_id, "triggered": event_time.check_trigger(delta=db_event.frequency, db_time=time,
+                                                                            last_trigger=db_event.last_trigger)}
 
 
-# @app.get("/companions/event/triggered/{user_id}/", tags=["Event"], summary="Check all event per user is triggered",
-#          responses={401: {"model": schemas.AuthError}})
-# def all_event_triggered(user_id: str, _: schemas.User = Depends(auth.get_current_user), db: Session = Depends(get_db)):
-#     pass
+@app.get("/companions/event/triggered/{user_id}/", tags=["Event"], summary="Check all event per user is triggered",
+         responses={401: {"model": schemas.AuthError}})
+def all_event_triggered(user_id: str, _: schemas.User = Depends(auth.get_current_user), db: Session = Depends(get_db)):
+    pass
 
 
 @app.delete("/companions/event/{event_id}/", tags=["Event"], summary="Delete event", response_model=schemas.DeleteEvent,

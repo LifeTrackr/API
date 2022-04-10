@@ -18,7 +18,6 @@ def create_user(db: Session, user: schemas.UserCreate):
 def modify_user(db: Session, username: str, new_password: str):
     hash_pw = get_password_hash(new_password)
     stmt = (update(models.User).values({"hashed_password": hash_pw}).where(models.User.username == username))
-
     return modify_row(stmt=stmt, _id=username, table=models.User, db=db)
 
 
