@@ -883,6 +883,68 @@
         ]
       }
     },
+    '/companions/event/logs/': {
+      'get': {
+        'tags': [
+          'Event'
+        ],
+        'summary': 'Get Event Logs',
+        'operationId': 'get_event_logs_companions_event_logs__get',
+        'parameters': [
+          {
+            'required': False,
+            'schema': {
+              'title': 'Skip',
+              'type': 'integer',
+              'default': 0
+            },
+            'name': 'skip',
+            'in': 'query'
+          },
+          {
+            'required': False,
+            'schema': {
+              'title': 'Limit',
+              'type': 'integer',
+              'default': 100
+            },
+            'name': 'limit',
+            'in': 'query'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  'title': 'Response Get Event Logs Companions Event Logs  Get',
+                  'type': 'array',
+                  'items': {
+                    '$ref': '#/components/schemas/EventLogs'
+                  }
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
     '/token/': {
       'post': {
         'tags': [
@@ -1243,6 +1305,25 @@
           },
           'action': {
             '$ref': '#/components/schemas/CompanionEvents'
+          }
+        }
+      },
+      'EventLogs': {
+        'title': 'EventLogs',
+        'required': [
+          'event_id',
+          'completed_at'
+        ],
+        'type': 'object',
+        'properties': {
+          'event_id': {
+            'title': 'Event Id',
+            'type': 'integer'
+          },
+          'completed_at': {
+            'title': 'Completed At',
+            'type': 'string',
+            'format': 'date-time'
           }
         }
       },
