@@ -42,3 +42,11 @@ class Event(Base):
     last_trigger = Column(DateTime, default=datetime.now(timezone.utc))
     action = Column(Enum(CompanionEvents, name="events"))
     update = Column(Boolean)
+
+
+class EventLogs(Base):
+    __tablename__ = "Event_Logs"
+    id = Column(Integer, primary_key=True)
+    event_id = Column(Integer, ForeignKey("Event.event_id"))
+    user_id = Column(Integer, ForeignKey("User.user_id"))
+    completed_at = Column(DateTime)
