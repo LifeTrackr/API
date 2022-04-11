@@ -1,4 +1,4 @@
-from sqlalchemy import delete, update
+from sqlalchemy import update
 from sqlalchemy.orm import Session
 
 from api import models, schemas
@@ -12,7 +12,7 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 def create_user(db: Session, user: schemas.UserCreate):
     db_user = models.User(username=user.username, hashed_password=get_password_hash(user.password), is_active=True)
-    return db_add(db, db_user)
+    return db_add(db=db, item=db_user)
 
 
 def modify_user(db: Session, user_id: int, new_password: str):
@@ -52,6 +52,6 @@ def modify_event(db: Session, item: schemas.EventBase, event_id: int):
     return modify_row(stmt=stmt, _id=event_id, table=models.Event, db=db)
 
 
-def delete_event(db: Session, event_id: int):
-    db.execute(delete(models.Event).where(models.Event.companion_id == event_id))
-    db.commit()
+def get_event_logs(db: Session, user_id: int, skip: int = 0, limit: int = 100):
+    db_logs = db.query(models.EventLogs).filter(models.EventLogs.user_id == user_id)
+    return db_logs.offset(skip).limit(limit).all()

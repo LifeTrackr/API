@@ -13,7 +13,7 @@ import api.database
 from api import crud, models, schemas
 from api import database
 from api.utils import auth
-from definitions import get_db
+from definitions import get_db, get_autocommit_db
 
 models.Base.metadata.create_all(bind=database.engine)
 app = FastAPI()
@@ -65,7 +65,7 @@ def modify_companion(companion_id: int, item: schemas.CompanionCreate, db: Sessi
 @app.delete("/users/companions/{companion_id}/", tags=["Companion"], summary="Delete a companion",
             responses={401: {"model": schemas.AuthError}}, response_model=schemas.DeleteCompanion)
 def delete_companion(companion_id: int, _: schemas.User = Depends(auth.get_current_user),
-                     db: Session = Depends(get_db)):
+                     db: Session = Depends(get_autocommit_db)):
     stmt = (delete(models.Companion).where(models.Companion.companion == companion_id))
     return database.modify_row(stmt=stmt, _id=companion_id, table=models.Companion, db=db)
 
@@ -102,7 +102,7 @@ def modify_event(event_id: int, item: schemas.EventBase, _: schemas.User = Depen
          description="Update `last_trigger` field to current time", responses={401: {"model": schemas.AuthError}},
          response_model=schemas.UpdateEvent)
 def update_last_complete(event_id: int, _: schemas.User = Depends(auth.get_current_user),
-                         db: Session = Depends(get_db)):
+                         db: Session = Depends(get_autocommit_db)):
     stmt = (update(models.Event).values({"update": True}).where(models.Event.event_id == event_id))
     return crud.modify_row(stmt=stmt, _id=event_id, table=models.Event, db=db)
 
@@ -127,9 +127,15 @@ def all_event_triggered(user_id: str, _: schemas.User = Depends(auth.get_current
 
 @app.delete("/companions/event/{event_id}/", tags=["Event"], summary="Delete event", response_model=schemas.DeleteEvent,
             responses={401: {"model": schemas.AuthError}})
-def delete_event(event_id: int, _: str = Depends(auth.get_current_user), db: Session = Depends(get_db)):
+def delete_event(event_id: int, _: str = Depends(auth.get_current_user), db: Session = Depends(get_autocommit_db)):
     stmt = (delete(models.Event).where(models.Event.event_id == event_id))
     return database.modify_row(db=db, table=models.Event, stmt=stmt, _id=event_id)
+
+
+@app.get("/companions/event/logs/", tags=["Event"], response_model=List[schemas.EventLogs])
+def get_event_logs(current_user: schemas.User = Depends(auth.get_current_user), db: Session = Depends(get_db),
+                   skip: int = 0, limit: int = 100):
+    return crud.get_event_logs(db=db, user_id=current_user.user_id, skip=skip, limit=limit)
 
 
 @app.post("/token/", response_model=schemas.Token, tags=["Authentication"], summary="Login")

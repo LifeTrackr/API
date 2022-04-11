@@ -160,3 +160,8 @@ class EventTriggered(BaseModel):
 
 class TestBearer(ResponseMessage):
     operation: str = "token for {username} is active and authorized"
+
+
+class EventLogs(BaseModel):
+    event_id: int
+    completed_at: datetime
