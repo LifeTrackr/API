@@ -43,3 +43,4 @@ watchgod==0.7
 websockets==10.2
 zipp==3.7.0
 psycopg2-binary==2.9.3
+pytest~=7.1.1
