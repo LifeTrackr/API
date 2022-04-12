@@ -1,8 +1,6 @@
-import ast
-
-import pytest
-from fastapi.testclient import TestClient
 import random
+
+from fastapi.testclient import TestClient
 
 from api.main import app
 
@@ -22,6 +20,10 @@ class TestCompanions:
     def test_create_companion(self):
         testName = 'test'
         testName += str(random.randint(0, 255))
-        msg = {"name": testName, "companion_type": random.choice(['cat', 'dog', 'plant', 'reptile']), "notes": "none", "image": "none"}
-        response = client.post("/users/companions/", headers={ 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0MkBlbWFpbC5jb20iLCJleHAiOjE2ODExNzA0NDZ9.LICm3_Tvuu6mB4sxLK-VgX370Y1zSOwmGi5BLh3Mb6A'}, data=msg)
+        msg = {"name": testName,
+               "companion_type": random.choice(['cat', 'dog', 'plant', 'reptile']),
+               "notes": "none", "image": "none"}
+        response = client.post("/users/companions/", headers={
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0MkBlbWFpbC5jb20iLCJleHAiOjE2ODExNzA0NDZ9.LICm3_Tvuu6mB4sxLK-VgX370Y1zSOwmGi5BLh3Mb6A'},
+                               json=msg)
         assert response.status_code == 200
