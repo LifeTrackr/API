@@ -1192,7 +1192,10 @@
           'qr_code',
           'last_trigger',
           'user_id',
-          'action'
+          'action',
+          'companion_name',
+          'companion_type',
+          'image'
         ],
         'type': 'object',
         'properties': {
@@ -1245,6 +1248,17 @@
           },
           'action': {
             '$ref': '#/components/schemas/CompanionEvents'
+          },
+          'companion_name': {
+            'title': 'Companion Name',
+            'type': 'string'
+          },
+          'companion_type': {
+            '$ref': '#/components/schemas/CompanionType'
+          },
+          'image': {
+            'title': 'Image',
+            'type': 'string'
           }
         }
       },

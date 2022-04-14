@@ -63,6 +63,10 @@ class EventBase(BaseModel):
 class EventCreate(EventBase):
     action: CompanionEvents
 
+    @validator("frequency")
+    def convert_frequency(cls, frequency):
+        return frequency / 60  # convert seconds to minutes
+
 
 class Event(EventBase):
     companion_id: int
@@ -73,6 +77,9 @@ class Event(EventBase):
     update: bool = False
     user_id: int
     action: CompanionEvents
+    companion_name: str
+    companion_type: CompanionType
+    image: str
 
     class Config:
         orm_mode = True
