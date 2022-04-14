@@ -16,6 +16,7 @@ def inBulk(d, items):
 
 class TestApi:
     token = None
+    companion_id = []
 
     def test_users(self):
         response = client.get("/users/")
@@ -42,19 +43,22 @@ class TestApi:
             inBulk(companion, ["name", "companion_type", "notes", "image", "user_id", "companion"])
 
     def test_create_companion(self):
-        testName = 'test'
+        testName = 'test_cc'
         testName += str(random.randint(0, 255))
         msg = {"name": testName,
                "companion_type": random.choice(['cat', 'dog', 'plant', 'reptile']),
                "notes": "none", "image": "none"}
-        response = client.post("/users/companions/", headers={
-            'Authorization': f'Bearer {self.__class__.token}'}, json=msg)
-        companionId = response.content[6]
-        print("Content is: ", companionId, response.content[5])
+        response = client.post("/users/companions/", json=msg, headers={
+            'Authorization': f'Bearer {self.__class__.token}'})
+        content = ast.literal_eval(response.content.decode("UTF-8"))  # decodes the response byte string into the dict
+        self.__class__.companion_id.append(content["companion"])
+        # print("Content is: ", companionId, response.content[5])
         assert response.status_code == 200
 
+    @pytest.mark.depends(on=['test_create_companion'])  # if test_login fails, this test will be skipped
     def test_modify_companion(self):
-        response = client.get("/companions/?skip=0&limit=100", headers={
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0MkBlbWFpbC5jb20iLCJleHAiOjE2ODExNzA0NDZ9.LICm3_Tvuu6mB4sxLK-VgX370Y1zSOwmGi5BLh3Mb6A'})
-        maxId = max(response.json()["companion"])
-        print(maxId)
+        msg = {"name": "Changed", "companion_type": "plant", "notes": "string", "image": "string"}
+        response = client.put(f"/users/companions/?companion_id={self.__class__.companion_id[0]}", json=msg, headers={
+            'Authorization': f'Bearer {self.__class__.token}'})
+        content = ast.literal_eval(response.content.decode("UTF-8"))  # decodes the response byte string into the dict
+        print()

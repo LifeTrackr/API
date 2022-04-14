@@ -27,8 +27,7 @@ def get_companions(db: Session, current_user: schemas.User, skip: int = 0, limit
 
 
 def modify_companion(db: Session, companion_id: int, item: schemas.CompanionCreate):
-    stmt = (update(models.Companion).where(models.Companion.companion == companion_id).values(**item.dict()))
-
+    stmt = update(models.Companion).where(models.Companion.companion == companion_id).values(**item.dict())
     return modify_row(stmt=stmt, _id=companion_id, table=models.Companion, db=db)
 
 
@@ -43,7 +42,10 @@ def get_events(db: Session, current_user: schemas.User, skip: int = 0, limit: in
 
 
 def create_event(db: Session, item: schemas.EventCreate, companion_id: int, username_id: int):
-    db_event = models.Event(**item.dict(), companion_id=companion_id, user_id=username_id, update=True)
+    companion = db.query(models.Companion).where(models.Companion.companion == companion_id).first()
+    db_event = models.Event(**item.dict(), companion_id=companion_id, user_id=username_id, update=True,
+                            companion_name=companion.name, companion_type=companion.companion_type,
+                            image=companion.image)
     return db_add(db, db_event)
 
 
