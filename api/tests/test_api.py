@@ -49,4 +49,12 @@ class TestApi:
                "notes": "none", "image": "none"}
         response = client.post("/users/companions/", headers={
             'Authorization': f'Bearer {self.__class__.token}'}, json=msg)
+        companionId = response.content[6]
+        print("Content is: ", companionId, response.content[5])
         assert response.status_code == 200
+
+    def test_modify_companion(self):
+        response = client.get("/companions/?skip=0&limit=100", headers={
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0MkBlbWFpbC5jb20iLCJleHAiOjE2ODExNzA0NDZ9.LICm3_Tvuu6mB4sxLK-VgX370Y1zSOwmGi5BLh3Mb6A'})
+        maxId = max(response.json()["companion"])
+        print(maxId)
