@@ -1,1 +1,1600 @@
-{'openapi': '3.0.2', 'info': {'title': 'FastAPI', 'version': '0.1.0'}, 'paths': {'/users/': {'get': {'tags': ['User'], 'summary': 'Get all users in database', 'operationId': 'read_users_users__get', 'parameters': [{'required': False, 'schema': {'title': 'Skip', 'type': 'integer', 'default': 0}, 'name': 'skip', 'in': 'query'}, {'required': False, 'schema': {'title': 'Limit', 'type': 'integer', 'default': 100}, 'name': 'limit', 'in': 'query'}], 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'title': 'Response Read Users Users  Get', 'type': 'array', 'items': {'$ref': '#/components/schemas/User'}}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}}, 'post': {'tags': ['User'], 'summary': 'Make a new user', 'operationId': 'create_user_users__post', 'requestBody': {'content': {'application/json': {'schema': {'$ref': '#/components/schemas/UserCreate'}}}, 'required': True}, 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/User'}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}}}, '/users/modify/': {'put': {'tags': ['User'], 'summary': 'Change user password', 'operationId': 'modify_user_users_modify__put', 'parameters': [{'required': True, 'schema': {'title': 'New Password', 'type': 'string'}, 'name': 'new_password', 'in': 'query'}], 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/UpdateUser'}}}}, '401': {'description': 'Unauthorized', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/AuthError'}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}}, '/users/token/test/': {'get': {'tags': ['User'], 'summary': 'Test Bearer Token', 'operationId': 'test_token_users_token_test__get', 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/TestBearer'}}}}, '401': {'description': 'Unauthorized', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/AuthError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}}, '/users/companions/': {'put': {'tags': ['Companion'], 'summary': 'Modify a companion', 'operationId': 'modify_companion_users_companions__put', 'parameters': [{'required': True, 'schema': {'title': 'Companion Id', 'type': 'integer'}, 'name': 'companion_id', 'in': 'query'}], 'requestBody': {'content': {'application/json': {'schema': {'$ref': '#/components/schemas/CompanionCreate'}}}, 'required': True}, 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/UpdateCompanion'}}}}, '403': {'description': 'Database validation error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/ModifyRowError'}}}}, '401': {'description': 'Unauthorized', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/AuthError'}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}, 'post': {'tags': ['Companion'], 'summary': 'Create a new companion', 'operationId': 'create_companion_for_user_users_companions__post', 'requestBody': {'content': {'application/json': {'schema': {'$ref': '#/components/schemas/CompanionCreate'}}}, 'required': True}, 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/Companion'}}}}, '401': {'description': 'Unauthorized', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/AuthError'}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}}, '/users/companions/{companion_id}/': {'delete': {'tags': ['Companion'], 'summary': 'Delete a companion', 'operationId': 'delete_companion_users_companions__companion_id___delete', 'parameters': [{'required': True, 'schema': {'title': 'Companion Id', 'type': 'integer'}, 'name': 'companion_id', 'in': 'path'}], 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/DeleteCompanion'}}}}, '401': {'description': 'Unauthorized', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/AuthError'}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}}, '/companions/': {'get': {'tags': ['Companion'], 'summary': 'Get all Companions for user', 'operationId': 'read_companions_companions__get', 'parameters': [{'required': False, 'schema': {'title': 'Skip', 'type': 'integer', 'default': 0}, 'name': 'skip', 'in': 'query'}, {'required': False, 'schema': {'title': 'Limit', 'type': 'integer', 'default': 100}, 'name': 'limit', 'in': 'query'}], 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'title': 'Response Read Companions Companions  Get', 'type': 'array', 'items': {'$ref': '#/components/schemas/Companion'}}}}}, '401': {'description': 'Unauthorized', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/AuthError'}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}}, '/companions/event/': {'get': {'tags': ['Event'], 'summary': 'Get all events for User', 'operationId': 'get_events_companions_event__get', 'parameters': [{'required': False, 'schema': {'title': 'Skip', 'type': 'integer', 'default': 0}, 'name': 'skip', 'in': 'query'}, {'required': False, 'schema': {'title': 'Limit', 'type': 'integer', 'default': 100}, 'name': 'limit', 'in': 'query'}], 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'title': 'Response Get Events Companions Event  Get', 'type': 'array', 'items': {'$ref': '#/components/schemas/EventJoin'}}}}}, '401': {'description': 'Unauthorized', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/AuthError'}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}, 'put': {'tags': ['Event'], 'summary': 'Modify event', 'operationId': 'modify_event_companions_event__put', 'parameters': [{'required': True, 'schema': {'title': 'Event Id', 'type': 'integer'}, 'name': 'event_id', 'in': 'query'}], 'requestBody': {'content': {'application/json': {'schema': {'$ref': '#/components/schemas/EventBase'}}}, 'required': True}, 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/UpdateEvent'}}}}, '401': {'description': 'Unauthorized', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/AuthError'}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}, 'post': {'tags': ['Event'], 'summary': 'Create a new `event` for `companion`', 'operationId': 'create_event_companions_event__post', 'parameters': [{'required': True, 'schema': {'title': 'Companion Id', 'type': 'integer'}, 'name': 'companion_id', 'in': 'query'}], 'requestBody': {'content': {'application/json': {'schema': {'$ref': '#/components/schemas/EventCreate'}}}, 'required': True}, 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/Event'}}}}, '401': {'description': 'Unauthorized', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/AuthError'}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}}, '/companions/event/last_complete/{event_id}/': {'put': {'tags': ['Event'], 'summary': 'Complete event', 'description': 'Update `last_trigger` field to current time', 'operationId': 'update_last_complete_companions_event_last_complete__event_id___put', 'parameters': [{'required': True, 'schema': {'title': 'Event Id', 'type': 'integer'}, 'name': 'event_id', 'in': 'path'}], 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/UpdateEvent'}}}}, '401': {'description': 'Unauthorized', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/AuthError'}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}}, '/companions/event/triggered/{event_id}/': {'get': {'tags': ['Event'], 'summary': 'Check if event is triggered', 'operationId': 'is_event_triggered_companions_event_triggered__event_id___get', 'parameters': [{'required': True, 'schema': {'title': 'Event Id', 'type': 'integer'}, 'name': 'event_id', 'in': 'path'}], 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/EventTriggered'}}}}, '401': {'description': 'Unauthorized', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/AuthError'}}}}, '422': {'description': 'Unprocessable Entity', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/ModifyRowError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}}, '/companions/event/triggered/{user_id}/': {'get': {'tags': ['Event'], 'summary': 'Check all event per user is triggered', 'operationId': 'all_event_triggered_companions_event_triggered__user_id___get', 'parameters': [{'required': True, 'schema': {'title': 'User Id', 'type': 'string'}, 'name': 'user_id', 'in': 'path'}], 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {}}}}, '401': {'description': 'Unauthorized', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/AuthError'}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}}, '/companions/event/{event_id}/': {'delete': {'tags': ['Event'], 'summary': 'Delete event', 'operationId': 'delete_event_companions_event__event_id___delete', 'parameters': [{'required': True, 'schema': {'title': 'Event Id', 'type': 'integer'}, 'name': 'event_id', 'in': 'path'}], 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/DeleteEvent'}}}}, '401': {'description': 'Unauthorized', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/AuthError'}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}}, '/companions/event/logs/': {'get': {'tags': ['Event'], 'summary': 'Get Event Logs', 'operationId': 'get_event_logs_companions_event_logs__get', 'parameters': [{'required': False, 'schema': {'title': 'Skip', 'type': 'integer', 'default': 0}, 'name': 'skip', 'in': 'query'}, {'required': False, 'schema': {'title': 'Limit', 'type': 'integer', 'default': 100}, 'name': 'limit', 'in': 'query'}], 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'title': 'Response Get Event Logs Companions Event Logs  Get', 'type': 'array', 'items': {'$ref': '#/components/schemas/EventLogs'}}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}, 'security': [{'OAuth2PasswordBearer': []}]}}, '/token/': {'post': {'tags': ['Authentication'], 'summary': 'Login', 'operationId': 'login_token__post', 'requestBody': {'content': {'application/x-www-form-urlencoded': {'schema': {'$ref': '#/components/schemas/Body_login_token__post'}}}, 'required': True}, 'responses': {'200': {'description': 'Successful Response', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/Token'}}}}, '422': {'description': 'Validation Error', 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/HTTPValidationError'}}}}}}}}, 'components': {'schemas': {'AuthError': {'title': 'AuthError', 'type': 'object', 'properties': {'detail': {'title': 'Detail', 'type': 'string', 'default': 'Not authenticated'}}}, 'Body_login_token__post': {'title': 'Body_login_token__post', 'required': ['username', 'password'], 'type': 'object', 'properties': {'grant_type': {'title': 'Grant Type', 'pattern': 'password', 'type': 'string'}, 'username': {'title': 'Username', 'type': 'string'}, 'password': {'title': 'Password', 'type': 'string'}, 'scope': {'title': 'Scope', 'type': 'string', 'default': ''}, 'client_id': {'title': 'Client Id', 'type': 'string'}, 'client_secret': {'title': 'Client Secret', 'type': 'string'}}}, 'Companion': {'title': 'Companion', 'required': ['name', 'companion_type', 'notes', 'image', 'user_id', 'companion'], 'type': 'object', 'properties': {'name': {'title': 'Name', 'type': 'string'}, 'companion_type': {'$ref': '#/components/schemas/CompanionType'}, 'notes': {'title': 'Notes', 'type': 'string'}, 'image': {'title': 'Image', 'type': 'string'}, 'user_id': {'title': 'User Id', 'type': 'string'}, 'companion': {'title': 'Companion', 'type': 'integer'}}}, 'CompanionCreate': {'title': 'CompanionCreate', 'required': ['name', 'companion_type', 'notes', 'image'], 'type': 'object', 'properties': {'name': {'title': 'Name', 'type': 'string'}, 'companion_type': {'$ref': '#/components/schemas/CompanionType'}, 'notes': {'title': 'Notes', 'type': 'string'}, 'image': {'title': 'Image', 'type': 'string'}}}, 'CompanionEvents': {'title': 'CompanionEvents', 'enum': ['water', 'fertilize', 'repot', 'feed', 'walk', 'groom', 'play', 'mist', 'clean'], 'type': 'string', 'description': 'An enumeration.'}, 'CompanionType': {'title': 'CompanionType', 'enum': ['plant', 'dog', 'cat', 'reptile'], 'type': 'string', 'description': 'An enumeration.'}, 'DeleteCompanion': {'title': 'DeleteCompanion', 'type': 'object', 'properties': {'row_id': {'title': 'Row Id', 'type': 'string', 'default': 1}, 'operation': {'title': 'Operation', 'type': 'string', 'default': 'delete'}, 'rows_modified': {'title': 'Rows Modified', 'type': 'integer', 'default': 1}, 'table': {'title': 'Table', 'type': 'string', 'default': 'Companion'}}}, 'DeleteEvent': {'title': 'DeleteEvent', 'type': 'object', 'properties': {'row_id': {'title': 'Row Id', 'type': 'string', 'default': 1}, 'operation': {'title': 'Operation', 'type': 'string', 'default': 'delete'}, 'rows_modified': {'title': 'Rows Modified', 'type': 'integer', 'default': 1}, 'table': {'title': 'Table', 'type': 'string', 'default': 'Event'}}}, 'Event': {'title': 'Event', 'required': ['name', 'notes', 'priority', 'frequency', 'companion_id', 'event_id', 'next_trigger', 'qr_code', 'last_trigger', 'user_id', 'action'], 'type': 'object', 'properties': {'name': {'title': 'Name', 'type': 'string'}, 'notes': {'title': 'Notes', 'type': 'string'}, 'priority': {'$ref': '#/components/schemas/PriorityType'}, 'frequency': {'title': 'Frequency', 'type': 'number', 'format': 'time-delta'}, 'companion_id': {'title': 'Companion Id', 'type': 'integer'}, 'event_id': {'title': 'Event Id', 'type': 'integer'}, 'next_trigger': {'title': 'Next Trigger', 'type': 'string', 'format': 'date-time'}, 'qr_code': {'title': 'Qr Code', 'type': 'integer'}, 'last_trigger': {'title': 'Last Trigger', 'type': 'string', 'format': 'date-time'}, 'update': {'title': 'Update', 'type': 'boolean', 'default': False}, 'user_id': {'title': 'User Id', 'type': 'integer'}, 'action': {'$ref': '#/components/schemas/CompanionEvents'}}}, 'EventBase': {'title': 'EventBase', 'required': ['name', 'notes', 'priority', 'frequency'], 'type': 'object', 'properties': {'name': {'title': 'Name', 'type': 'string'}, 'notes': {'title': 'Notes', 'type': 'string'}, 'priority': {'$ref': '#/components/schemas/PriorityType'}, 'frequency': {'title': 'Frequency', 'type': 'number', 'format': 'time-delta'}}}, 'EventCreate': {'title': 'EventCreate', 'required': ['name', 'notes', 'priority', 'frequency', 'action'], 'type': 'object', 'properties': {'name': {'title': 'Name', 'type': 'string'}, 'notes': {'title': 'Notes', 'type': 'string'}, 'priority': {'$ref': '#/components/schemas/PriorityType'}, 'frequency': {'title': 'Frequency', 'type': 'number', 'format': 'time-delta'}, 'action': {'$ref': '#/components/schemas/CompanionEvents'}}}, 'EventJoin': {'title': 'EventJoin', 'required': ['name', 'notes', 'priority', 'frequency', 'companion_id', 'event_id', 'next_trigger', 'qr_code', 'last_trigger', 'user_id', 'action', 'companion_name', 'companion_type', 'image'], 'type': 'object', 'properties': {'name': {'title': 'Name', 'type': 'string'}, 'notes': {'title': 'Notes', 'type': 'string'}, 'priority': {'$ref': '#/components/schemas/PriorityType'}, 'frequency': {'title': 'Frequency', 'type': 'number', 'format': 'time-delta'}, 'companion_id': {'title': 'Companion Id', 'type': 'integer'}, 'event_id': {'title': 'Event Id', 'type': 'integer'}, 'next_trigger': {'title': 'Next Trigger', 'type': 'string', 'format': 'date-time'}, 'qr_code': {'title': 'Qr Code', 'type': 'integer'}, 'last_trigger': {'title': 'Last Trigger', 'type': 'string', 'format': 'date-time'}, 'update': {'title': 'Update', 'type': 'boolean', 'default': False}, 'user_id': {'title': 'User Id', 'type': 'integer'}, 'action': {'$ref': '#/components/schemas/CompanionEvents'}, 'companion_name': {'title': 'Companion Name', 'type': 'string'}, 'companion_type': {'$ref': '#/components/schemas/CompanionType'}, 'image': {'title': 'Image', 'type': 'string'}}}, 'EventLogs': {'title': 'EventLogs', 'required': ['event_id', 'completed_at'], 'type': 'object', 'properties': {'event_id': {'title': 'Event Id', 'type': 'integer'}, 'completed_at': {'title': 'Completed At', 'type': 'string', 'format': 'date-time'}}}, 'EventTriggered': {'title': 'EventTriggered', 'required': ['event_id', 'triggered'], 'type': 'object', 'properties': {'event_id': {'title': 'Event Id', 'type': 'integer'}, 'triggered': {'title': 'Triggered', 'type': 'boolean'}}}, 'HTTPValidationError': {'title': 'HTTPValidationError', 'type': 'object', 'properties': {'detail': {'title': 'Detail', 'type': 'array', 'items': {'$ref': '#/components/schemas/ValidationError'}}}}, 'ModifyRowError': {'title': 'ModifyRowError', 'required': ['message'], 'type': 'object', 'properties': {'message': {'title': 'Message', 'type': 'string'}}}, 'PriorityType': {'title': 'PriorityType', 'enum': ['l', 'm', 'h'], 'type': 'string', 'description': 'An enumeration.'}, 'TestBearer': {'title': 'TestBearer', 'required': ['result'], 'type': 'object', 'properties': {'operation': {'title': 'Operation', 'type': 'string', 'default': 'token for {username} is active and authorized'}, 'result': {'title': 'Result', 'type': 'boolean'}}}, 'Token': {'title': 'Token', 'required': ['access_token', 'token_type'], 'type': 'object', 'properties': {'access_token': {'title': 'Access Token', 'type': 'string'}, 'token_type': {'title': 'Token Type', 'type': 'string'}}}, 'UpdateCompanion': {'title': 'UpdateCompanion', 'type': 'object', 'properties': {'row_id': {'title': 'Row Id', 'type': 'string', 'default': 1}, 'operation': {'title': 'Operation', 'type': 'string', 'default': 'update'}, 'rows_modified': {'title': 'Rows Modified', 'type': 'integer', 'default': 1}, 'table': {'title': 'Table', 'type': 'string', 'default': 'Companion'}}}, 'UpdateEvent': {'title': 'UpdateEvent', 'type': 'object', 'properties': {'row_id': {'title': 'Row Id', 'type': 'string', 'default': 1}, 'operation': {'title': 'Operation', 'type': 'string', 'default': 'update'}, 'rows_modified': {'title': 'Rows Modified', 'type': 'integer', 'default': 1}, 'table': {'title': 'Table', 'type': 'string', 'default': 'Event'}}}, 'UpdateUser': {'title': 'UpdateUser', 'type': 'object', 'properties': {'row_id': {'title': 'Row Id', 'type': 'string', 'default': 1}, 'operation': {'title': 'Operation', 'type': 'string', 'default': 'update'}, 'rows_modified': {'title': 'Rows Modified', 'type': 'integer', 'default': 1}, 'table': {'title': 'Table', 'type': 'string', 'default': 'User'}}}, 'User': {'title': 'User', 'required': ['username', 'is_active', 'user_id'], 'type': 'object', 'properties': {'username': {'title': 'Username', 'type': 'string'}, 'is_active': {'title': 'Is Active', 'type': 'boolean'}, 'user_id': {'title': 'User Id', 'type': 'integer'}, 'Companions': {'title': 'Companions', 'type': 'array', 'items': {'$ref': '#/components/schemas/Companion'}, 'default': []}}}, 'UserCreate': {'title': 'UserCreate', 'required': ['username', 'password'], 'type': 'object', 'properties': {'username': {'title': 'Username', 'type': 'string'}, 'password': {'title': 'Password', 'type': 'string'}}}, 'ValidationError': {'title': 'ValidationError', 'required': ['loc', 'msg', 'type'], 'type': 'object', 'properties': {'loc': {'title': 'Location', 'type': 'array', 'items': {'type': 'string'}}, 'msg': {'title': 'Message', 'type': 'string'}, 'type': {'title': 'Error Type', 'type': 'string'}}}}, 'securitySchemes': {'OAuth2PasswordBearer': {'type': 'oauth2', 'flows': {'password': {'scopes': {}, 'tokenUrl': 'token'}}}}}}
+{
+  'openapi': '3.0.2',
+  'info': {
+    'title': 'FastAPI',
+    'version': '0.1.0'
+  },
+  'paths': {
+    '/users/': {
+      'get': {
+        'tags': [
+          'User'
+        ],
+        'summary': 'Get all users in database',
+        'operationId': 'read_users_users__get',
+        'parameters': [
+          {
+            'required': False,
+            'schema': {
+              'title': 'Skip',
+              'type': 'integer',
+              'default': 0
+            },
+            'name': 'skip',
+            'in': 'query'
+          },
+          {
+            'required': False,
+            'schema': {
+              'title': 'Limit',
+              'type': 'integer',
+              'default': 100
+            },
+            'name': 'limit',
+            'in': 'query'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  'title': 'Response Read Users Users  Get',
+                  'type': 'array',
+                  'items': {
+                    '$ref': '#/components/schemas/User'
+                  }
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        }
+      },
+      'post': {
+        'tags': [
+          'User'
+        ],
+        'summary': 'Make a new user',
+        'operationId': 'create_user_users__post',
+        'requestBody': {
+          'content': {
+            'application/json': {
+              'schema': {
+                '$ref': '#/components/schemas/UserCreate'
+              }
+            }
+          },
+          'required': True
+        },
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/User'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    '/users/modify/': {
+      'put': {
+        'tags': [
+          'User'
+        ],
+        'summary': 'Change user password',
+        'operationId': 'modify_user_users_modify__put',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'New Password',
+              'type': 'string'
+            },
+            'name': 'new_password',
+            'in': 'query'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/UpdateUser'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/users/token/test/': {
+      'get': {
+        'tags': [
+          'User'
+        ],
+        'summary': 'Test Bearer Token',
+        'operationId': 'test_token_users_token_test__get',
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/TestBearer'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/users/companions/': {
+      'put': {
+        'tags': [
+          'Companion'
+        ],
+        'summary': 'Modify a companion',
+        'operationId': 'modify_companion_users_companions__put',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'Companion Id',
+              'type': 'integer'
+            },
+            'name': 'companion_id',
+            'in': 'query'
+          }
+        ],
+        'requestBody': {
+          'content': {
+            'application/json': {
+              'schema': {
+                '$ref': '#/components/schemas/CompanionCreate'
+              }
+            }
+          },
+          'required': True
+        },
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/UpdateCompanion'
+                }
+              }
+            }
+          },
+          '403': {
+            'description': 'Database validation error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/ModifyRowError'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      },
+      'post': {
+        'tags': [
+          'Companion'
+        ],
+        'summary': 'Create a new companion',
+        'operationId': 'create_companion_for_user_users_companions__post',
+        'requestBody': {
+          'content': {
+            'application/json': {
+              'schema': {
+                '$ref': '#/components/schemas/CompanionCreate'
+              }
+            }
+          },
+          'required': True
+        },
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/Companion'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/users/companions/{companion_id}/': {
+      'delete': {
+        'tags': [
+          'Companion'
+        ],
+        'summary': 'Delete a companion',
+        'operationId': 'delete_companion_users_companions__companion_id___delete',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'Companion Id',
+              'type': 'integer'
+            },
+            'name': 'companion_id',
+            'in': 'path'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/DeleteCompanion'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/companions/': {
+      'get': {
+        'tags': [
+          'Companion'
+        ],
+        'summary': 'Get all Companions for user',
+        'operationId': 'read_companions_companions__get',
+        'parameters': [
+          {
+            'required': False,
+            'schema': {
+              'title': 'Skip',
+              'type': 'integer',
+              'default': 0
+            },
+            'name': 'skip',
+            'in': 'query'
+          },
+          {
+            'required': False,
+            'schema': {
+              'title': 'Limit',
+              'type': 'integer',
+              'default': 100
+            },
+            'name': 'limit',
+            'in': 'query'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  'title': 'Response Read Companions Companions  Get',
+                  'type': 'array',
+                  'items': {
+                    '$ref': '#/components/schemas/Companion'
+                  }
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/companions/event/': {
+      'get': {
+        'tags': [
+          'Event'
+        ],
+        'summary': 'Get all events for User',
+        'operationId': 'get_events_companions_event__get',
+        'parameters': [
+          {
+            'required': False,
+            'schema': {
+              'title': 'Skip',
+              'type': 'integer',
+              'default': 0
+            },
+            'name': 'skip',
+            'in': 'query'
+          },
+          {
+            'required': False,
+            'schema': {
+              'title': 'Limit',
+              'type': 'integer',
+              'default': 100
+            },
+            'name': 'limit',
+            'in': 'query'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  'title': 'Response Get Events Companions Event  Get',
+                  'type': 'array',
+                  'items': {
+                    '$ref': '#/components/schemas/EventJoin'
+                  }
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      },
+      'put': {
+        'tags': [
+          'Event'
+        ],
+        'summary': 'Modify event',
+        'operationId': 'modify_event_companions_event__put',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'Event Id',
+              'type': 'integer'
+            },
+            'name': 'event_id',
+            'in': 'query'
+          }
+        ],
+        'requestBody': {
+          'content': {
+            'application/json': {
+              'schema': {
+                '$ref': '#/components/schemas/EventBase'
+              }
+            }
+          },
+          'required': True
+        },
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/UpdateEvent'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      },
+      'post': {
+        'tags': [
+          'Event'
+        ],
+        'summary': 'Create a new `event` for `companion`',
+        'operationId': 'create_event_companions_event__post',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'Companion Id',
+              'type': 'integer'
+            },
+            'name': 'companion_id',
+            'in': 'query'
+          }
+        ],
+        'requestBody': {
+          'content': {
+            'application/json': {
+              'schema': {
+                '$ref': '#/components/schemas/EventCreate'
+              }
+            }
+          },
+          'required': True
+        },
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/EventJoin'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/companions/event/last_complete/{event_id}/': {
+      'put': {
+        'tags': [
+          'Event'
+        ],
+        'summary': 'Complete event',
+        'description': 'Update `last_trigger` field to current time',
+        'operationId': 'update_last_complete_companions_event_last_complete__event_id___put',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'Event Id',
+              'type': 'integer'
+            },
+            'name': 'event_id',
+            'in': 'path'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/UpdateEvent'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/companions/event/triggered/{event_id}/': {
+      'get': {
+        'tags': [
+          'Event'
+        ],
+        'summary': 'Check if event is triggered',
+        'operationId': 'is_event_triggered_companions_event_triggered__event_id___get',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'Event Id',
+              'type': 'integer'
+            },
+            'name': 'event_id',
+            'in': 'path'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/EventTriggered'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Unprocessable Entity',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/ModifyRowError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/companions/event/triggered/{user_id}/': {
+      'get': {
+        'tags': [
+          'Event'
+        ],
+        'summary': 'Check all event per user is triggered',
+        'operationId': 'all_event_triggered_companions_event_triggered__user_id___get',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'User Id',
+              'type': 'string'
+            },
+            'name': 'user_id',
+            'in': 'path'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {}
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/companions/event/{event_id}/': {
+      'delete': {
+        'tags': [
+          'Event'
+        ],
+        'summary': 'Delete event',
+        'operationId': 'delete_event_companions_event__event_id___delete',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'Event Id',
+              'type': 'integer'
+            },
+            'name': 'event_id',
+            'in': 'path'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/DeleteEvent'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/companions/event/logs/': {
+      'get': {
+        'tags': [
+          'Event'
+        ],
+        'summary': 'Get Event Logs',
+        'operationId': 'get_event_logs_companions_event_logs__get',
+        'parameters': [
+          {
+            'required': False,
+            'schema': {
+              'title': 'Skip',
+              'type': 'integer',
+              'default': 0
+            },
+            'name': 'skip',
+            'in': 'query'
+          },
+          {
+            'required': False,
+            'schema': {
+              'title': 'Limit',
+              'type': 'integer',
+              'default': 100
+            },
+            'name': 'limit',
+            'in': 'query'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  'title': 'Response Get Event Logs Companions Event Logs  Get',
+                  'type': 'array',
+                  'items': {
+                    '$ref': '#/components/schemas/EventLogs'
+                  }
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/token/': {
+      'post': {
+        'tags': [
+          'Authentication'
+        ],
+        'summary': 'Login',
+        'operationId': 'login_token__post',
+        'requestBody': {
+          'content': {
+            'application/x-www-form-urlencoded': {
+              'schema': {
+                '$ref': '#/components/schemas/Body_login_token__post'
+              }
+            }
+          },
+          'required': True
+        },
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/Token'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  'components': {
+    'schemas': {
+      'AuthError': {
+        'title': 'AuthError',
+        'type': 'object',
+        'properties': {
+          'detail': {
+            'title': 'Detail',
+            'type': 'string',
+            'default': 'Not authenticated'
+          }
+        }
+      },
+      'Body_login_token__post': {
+        'title': 'Body_login_token__post',
+        'required': [
+          'username',
+          'password'
+        ],
+        'type': 'object',
+        'properties': {
+          'grant_type': {
+            'title': 'Grant Type',
+            'pattern': 'password',
+            'type': 'string'
+          },
+          'username': {
+            'title': 'Username',
+            'type': 'string'
+          },
+          'password': {
+            'title': 'Password',
+            'type': 'string'
+          },
+          'scope': {
+            'title': 'Scope',
+            'type': 'string',
+            'default': ''
+          },
+          'client_id': {
+            'title': 'Client Id',
+            'type': 'string'
+          },
+          'client_secret': {
+            'title': 'Client Secret',
+            'type': 'string'
+          }
+        }
+      },
+      'Companion': {
+        'title': 'Companion',
+        'required': [
+          'name',
+          'companion_type',
+          'notes',
+          'image',
+          'user_id',
+          'companion'
+        ],
+        'type': 'object',
+        'properties': {
+          'name': {
+            'title': 'Name',
+            'type': 'string'
+          },
+          'companion_type': {
+            '$ref': '#/components/schemas/CompanionType'
+          },
+          'notes': {
+            'title': 'Notes',
+            'type': 'string'
+          },
+          'image': {
+            'title': 'Image',
+            'type': 'string'
+          },
+          'user_id': {
+            'title': 'User Id',
+            'type': 'string'
+          },
+          'companion': {
+            'title': 'Companion',
+            'type': 'integer'
+          }
+        }
+      },
+      'CompanionCreate': {
+        'title': 'CompanionCreate',
+        'required': [
+          'name',
+          'companion_type',
+          'notes',
+          'image'
+        ],
+        'type': 'object',
+        'properties': {
+          'name': {
+            'title': 'Name',
+            'type': 'string'
+          },
+          'companion_type': {
+            '$ref': '#/components/schemas/CompanionType'
+          },
+          'notes': {
+            'title': 'Notes',
+            'type': 'string'
+          },
+          'image': {
+            'title': 'Image',
+            'type': 'string'
+          }
+        }
+      },
+      'CompanionEvents': {
+        'title': 'CompanionEvents',
+        'enum': [
+          'water',
+          'fertilize',
+          'repot',
+          'feed',
+          'walk',
+          'groom',
+          'play',
+          'mist',
+          'clean'
+        ],
+        'type': 'string',
+        'description': 'An enumeration.'
+      },
+      'CompanionType': {
+        'title': 'CompanionType',
+        'enum': [
+          'plant',
+          'dog',
+          'cat',
+          'reptile'
+        ],
+        'type': 'string',
+        'description': 'An enumeration.'
+      },
+      'DeleteCompanion': {
+        'title': 'DeleteCompanion',
+        'type': 'object',
+        'properties': {
+          'row_id': {
+            'title': 'Row Id',
+            'type': 'string',
+            'default': 1
+          },
+          'operation': {
+            'title': 'Operation',
+            'type': 'string',
+            'default': 'delete'
+          },
+          'rows_modified': {
+            'title': 'Rows Modified',
+            'type': 'integer',
+            'default': 1
+          },
+          'table': {
+            'title': 'Table',
+            'type': 'string',
+            'default': 'Companion'
+          }
+        }
+      },
+      'DeleteEvent': {
+        'title': 'DeleteEvent',
+        'type': 'object',
+        'properties': {
+          'row_id': {
+            'title': 'Row Id',
+            'type': 'string',
+            'default': 1
+          },
+          'operation': {
+            'title': 'Operation',
+            'type': 'string',
+            'default': 'delete'
+          },
+          'rows_modified': {
+            'title': 'Rows Modified',
+            'type': 'integer',
+            'default': 1
+          },
+          'table': {
+            'title': 'Table',
+            'type': 'string',
+            'default': 'Event'
+          }
+        }
+      },
+      'EventBase': {
+        'title': 'EventBase',
+        'required': [
+          'name',
+          'notes',
+          'priority',
+          'frequency'
+        ],
+        'type': 'object',
+        'properties': {
+          'name': {
+            'title': 'Name',
+            'type': 'string'
+          },
+          'notes': {
+            'title': 'Notes',
+            'type': 'string'
+          },
+          'priority': {
+            '$ref': '#/components/schemas/PriorityType'
+          },
+          'frequency': {
+            'title': 'Frequency',
+            'type': 'number',
+            'format': 'time-delta'
+          }
+        }
+      },
+      'EventCreate': {
+        'title': 'EventCreate',
+        'required': [
+          'name',
+          'notes',
+          'priority',
+          'frequency',
+          'action'
+        ],
+        'type': 'object',
+        'properties': {
+          'name': {
+            'title': 'Name',
+            'type': 'string'
+          },
+          'notes': {
+            'title': 'Notes',
+            'type': 'string'
+          },
+          'priority': {
+            '$ref': '#/components/schemas/PriorityType'
+          },
+          'frequency': {
+            'title': 'Frequency',
+            'type': 'number',
+            'format': 'time-delta'
+          },
+          'action': {
+            '$ref': '#/components/schemas/CompanionEvents'
+          }
+        }
+      },
+      'EventJoin': {
+        'title': 'EventJoin',
+        'required': [
+          'name',
+          'notes',
+          'priority',
+          'frequency',
+          'companion_id',
+          'event_id',
+          'next_trigger',
+          'qr_code',
+          'last_trigger',
+          'user_id',
+          'action',
+          'companion_name',
+          'companion_type',
+          'image'
+        ],
+        'type': 'object',
+        'properties': {
+          'name': {
+            'title': 'Name',
+            'type': 'string'
+          },
+          'notes': {
+            'title': 'Notes',
+            'type': 'string'
+          },
+          'priority': {
+            '$ref': '#/components/schemas/PriorityType'
+          },
+          'frequency': {
+            'title': 'Frequency',
+            'type': 'number',
+            'format': 'time-delta'
+          },
+          'companion_id': {
+            'title': 'Companion Id',
+            'type': 'integer'
+          },
+          'event_id': {
+            'title': 'Event Id',
+            'type': 'integer'
+          },
+          'next_trigger': {
+            'title': 'Next Trigger',
+            'type': 'string',
+            'format': 'date-time'
+          },
+          'qr_code': {
+            'title': 'Qr Code',
+            'type': 'integer'
+          },
+          'last_trigger': {
+            'title': 'Last Trigger',
+            'type': 'string',
+            'format': 'date-time'
+          },
+          'update': {
+            'title': 'Update',
+            'type': 'boolean',
+            'default': False
+          },
+          'user_id': {
+            'title': 'User Id',
+            'type': 'integer'
+          },
+          'action': {
+            '$ref': '#/components/schemas/CompanionEvents'
+          },
+          'companion_name': {
+            'title': 'Companion Name',
+            'type': 'string'
+          },
+          'companion_type': {
+            '$ref': '#/components/schemas/CompanionType'
+          },
+          'image': {
+            'title': 'Image',
+            'type': 'string'
+          }
+        }
+      },
+      'EventLogs': {
+        'title': 'EventLogs',
+        'required': [
+          'event_id',
+          'completed_at'
+        ],
+        'type': 'object',
+        'properties': {
+          'event_id': {
+            'title': 'Event Id',
+            'type': 'integer'
+          },
+          'completed_at': {
+            'title': 'Completed At',
+            'type': 'string',
+            'format': 'date-time'
+          }
+        }
+      },
+      'EventTriggered': {
+        'title': 'EventTriggered',
+        'required': [
+          'event_id',
+          'triggered'
+        ],
+        'type': 'object',
+        'properties': {
+          'event_id': {
+            'title': 'Event Id',
+            'type': 'integer'
+          },
+          'triggered': {
+            'title': 'Triggered',
+            'type': 'boolean'
+          }
+        }
+      },
+      'HTTPValidationError': {
+        'title': 'HTTPValidationError',
+        'type': 'object',
+        'properties': {
+          'detail': {
+            'title': 'Detail',
+            'type': 'array',
+            'items': {
+              '$ref': '#/components/schemas/ValidationError'
+            }
+          }
+        }
+      },
+      'ModifyRowError': {
+        'title': 'ModifyRowError',
+        'required': [
+          'message'
+        ],
+        'type': 'object',
+        'properties': {
+          'message': {
+            'title': 'Message',
+            'type': 'string'
+          }
+        }
+      },
+      'PriorityType': {
+        'title': 'PriorityType',
+        'enum': [
+          'l',
+          'm',
+          'h'
+        ],
+        'type': 'string',
+        'description': 'An enumeration.'
+      },
+      'TestBearer': {
+        'title': 'TestBearer',
+        'required': [
+          'result'
+        ],
+        'type': 'object',
+        'properties': {
+          'operation': {
+            'title': 'Operation',
+            'type': 'string',
+            'default': 'token for {username} is active and authorized'
+          },
+          'result': {
+            'title': 'Result',
+            'type': 'boolean'
+          }
+        }
+      },
+      'Token': {
+        'title': 'Token',
+        'required': [
+          'access_token',
+          'token_type'
+        ],
+        'type': 'object',
+        'properties': {
+          'access_token': {
+            'title': 'Access Token',
+            'type': 'string'
+          },
+          'token_type': {
+            'title': 'Token Type',
+            'type': 'string'
+          }
+        }
+      },
+      'UpdateCompanion': {
+        'title': 'UpdateCompanion',
+        'type': 'object',
+        'properties': {
+          'row_id': {
+            'title': 'Row Id',
+            'type': 'string',
+            'default': 1
+          },
+          'operation': {
+            'title': 'Operation',
+            'type': 'string',
+            'default': 'update'
+          },
+          'rows_modified': {
+            'title': 'Rows Modified',
+            'type': 'integer',
+            'default': 1
+          },
+          'table': {
+            'title': 'Table',
+            'type': 'string',
+            'default': 'Companion'
+          }
+        }
+      },
+      'UpdateEvent': {
+        'title': 'UpdateEvent',
+        'type': 'object',
+        'properties': {
+          'row_id': {
+            'title': 'Row Id',
+            'type': 'string',
+            'default': 1
+          },
+          'operation': {
+            'title': 'Operation',
+            'type': 'string',
+            'default': 'update'
+          },
+          'rows_modified': {
+            'title': 'Rows Modified',
+            'type': 'integer',
+            'default': 1
+          },
+          'table': {
+            'title': 'Table',
+            'type': 'string',
+            'default': 'Event'
+          }
+        }
+      },
+      'UpdateUser': {
+        'title': 'UpdateUser',
+        'type': 'object',
+        'properties': {
+          'row_id': {
+            'title': 'Row Id',
+            'type': 'string',
+            'default': 1
+          },
+          'operation': {
+            'title': 'Operation',
+            'type': 'string',
+            'default': 'update'
+          },
+          'rows_modified': {
+            'title': 'Rows Modified',
+            'type': 'integer',
+            'default': 1
+          },
+          'table': {
+            'title': 'Table',
+            'type': 'string',
+            'default': 'User'
+          }
+        }
+      },
+      'User': {
+        'title': 'User',
+        'required': [
+          'username',
+          'is_active',
+          'user_id'
+        ],
+        'type': 'object',
+        'properties': {
+          'username': {
+            'title': 'Username',
+            'type': 'string'
+          },
+          'is_active': {
+            'title': 'Is Active',
+            'type': 'boolean'
+          },
+          'user_id': {
+            'title': 'User Id',
+            'type': 'integer'
+          },
+          'Companions': {
+            'title': 'Companions',
+            'type': 'array',
+            'items': {
+              '$ref': '#/components/schemas/Companion'
+            },
+            'default': []
+          }
+        }
+      },
+      'UserCreate': {
+        'title': 'UserCreate',
+        'required': [
+          'username',
+          'password'
+        ],
+        'type': 'object',
+        'properties': {
+          'username': {
+            'title': 'Username',
+            'type': 'string'
+          },
+          'password': {
+            'title': 'Password',
+            'type': 'string'
+          }
+        }
+      },
+      'ValidationError': {
+        'title': 'ValidationError',
+        'required': [
+          'loc',
+          'msg',
+          'type'
+        ],
+        'type': 'object',
+        'properties': {
+          'loc': {
+            'title': 'Location',
+            'type': 'array',
+            'items': {
+              'type': 'string'
+            }
+          },
+          'msg': {
+            'title': 'Message',
+            'type': 'string'
+          },
+          'type': {
+            'title': 'Error Type',
+            'type': 'string'
+          }
+        }
+      }
+    },
+    'securitySchemes': {
+      'OAuth2PasswordBearer': {
+        'type': 'oauth2',
+        'flows': {
+          'password': {
+            'scopes': {},
+            'tokenUrl': 'token'
+          }
+        }
+      }
+    }
+  }
+}

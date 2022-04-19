@@ -30,17 +30,9 @@ class Companion(Base):
 
 class Event(Base):
     __tablename__ = "Event"
-    event_id = Column(Integer, primary_key=True)
     companion_id = Column(Integer, ForeignKey("Companion.companion"))
     user_id = Column(Integer, ForeignKey("User.user_id"))
-    user_relationship = relationship("User", foreign_keys=[user_id])
-    companion_name = Column(String(10), ForeignKey("Companion.name"))
-    companion_relationship = relationship("Companion", foreign_keys=[companion_name])
-    companion_type = Column(Enum(CompanionType, name="companion types"), ForeignKey("Companion.companion_type"))
-    companion_type_relationship = relationship("Companion", foreign_keys=[companion_type])
-    image = Column(String(255), ForeignKey("Companion.image"), default="https://img.icons8.com/ios-glyphs/60/000000"
-                                                                       "/dog-heart.png")
-    image_relationship = relationship("Companion", foreign_keys=[image])
+    event_id = Column(Integer, primary_key=True)
     name = Column(String(10))
     next_trigger = Column(DateTime)
     qr_code = Column(Integer, default=0)

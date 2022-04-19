@@ -492,7 +492,7 @@
                   'title': 'Response Get Events Companions Event  Get',
                   'type': 'array',
                   'items': {
-                    '$ref': '#/components/schemas/Event'
+                    '$ref': '#/components/schemas/EventJoin'
                   }
                 }
               }
@@ -623,7 +623,7 @@
             'content': {
               'application/json': {
                 'schema': {
-                  '$ref': '#/components/schemas/Event'
+                  '$ref': '#/components/schemas/EventJoin'
                 }
               }
             }
@@ -1179,75 +1179,6 @@
           }
         }
       },
-      'Event': {
-        'title': 'Event',
-        'required': [
-          'name',
-          'notes',
-          'priority',
-          'frequency',
-          'companion_id',
-          'event_id',
-          'next_trigger',
-          'qr_code',
-          'last_trigger',
-          'user_id',
-          'action'
-        ],
-        'type': 'object',
-        'properties': {
-          'name': {
-            'title': 'Name',
-            'type': 'string'
-          },
-          'notes': {
-            'title': 'Notes',
-            'type': 'string'
-          },
-          'priority': {
-            '$ref': '#/components/schemas/PriorityType'
-          },
-          'frequency': {
-            'title': 'Frequency',
-            'type': 'number',
-            'format': 'time-delta'
-          },
-          'companion_id': {
-            'title': 'Companion Id',
-            'type': 'integer'
-          },
-          'event_id': {
-            'title': 'Event Id',
-            'type': 'integer'
-          },
-          'next_trigger': {
-            'title': 'Next Trigger',
-            'type': 'string',
-            'format': 'date-time'
-          },
-          'qr_code': {
-            'title': 'Qr Code',
-            'type': 'integer'
-          },
-          'last_trigger': {
-            'title': 'Last Trigger',
-            'type': 'string',
-            'format': 'date-time'
-          },
-          'update': {
-            'title': 'Update',
-            'type': 'boolean',
-            'default': False
-          },
-          'user_id': {
-            'title': 'User Id',
-            'type': 'integer'
-          },
-          'action': {
-            '$ref': '#/components/schemas/CompanionEvents'
-          }
-        }
-      },
       'EventBase': {
         'title': 'EventBase',
         'required': [
@@ -1305,6 +1236,89 @@
           },
           'action': {
             '$ref': '#/components/schemas/CompanionEvents'
+          }
+        }
+      },
+      'EventJoin': {
+        'title': 'EventJoin',
+        'required': [
+          'name',
+          'notes',
+          'priority',
+          'frequency',
+          'companion_id',
+          'event_id',
+          'next_trigger',
+          'qr_code',
+          'last_trigger',
+          'user_id',
+          'action',
+          'companion_name',
+          'companion_type',
+          'image'
+        ],
+        'type': 'object',
+        'properties': {
+          'name': {
+            'title': 'Name',
+            'type': 'string'
+          },
+          'notes': {
+            'title': 'Notes',
+            'type': 'string'
+          },
+          'priority': {
+            '$ref': '#/components/schemas/PriorityType'
+          },
+          'frequency': {
+            'title': 'Frequency',
+            'type': 'number',
+            'format': 'time-delta'
+          },
+          'companion_id': {
+            'title': 'Companion Id',
+            'type': 'integer'
+          },
+          'event_id': {
+            'title': 'Event Id',
+            'type': 'integer'
+          },
+          'next_trigger': {
+            'title': 'Next Trigger',
+            'type': 'string',
+            'format': 'date-time'
+          },
+          'qr_code': {
+            'title': 'Qr Code',
+            'type': 'integer'
+          },
+          'last_trigger': {
+            'title': 'Last Trigger',
+            'type': 'string',
+            'format': 'date-time'
+          },
+          'update': {
+            'title': 'Update',
+            'type': 'boolean',
+            'default': False
+          },
+          'user_id': {
+            'title': 'User Id',
+            'type': 'integer'
+          },
+          'action': {
+            '$ref': '#/components/schemas/CompanionEvents'
+          },
+          'companion_name': {
+            'title': 'Companion Name',
+            'type': 'string'
+          },
+          'companion_type': {
+            '$ref': '#/components/schemas/CompanionType'
+          },
+          'image': {
+            'title': 'Image',
+            'type': 'string'
           }
         }
       },

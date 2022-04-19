@@ -77,9 +77,6 @@ class Event(EventBase):
     update: bool = False
     user_id: int
     action: CompanionEvents
-    companion_name: str
-    companion_type: CompanionType
-    image: str
 
     class Config:
         orm_mode = True

@@ -36,40 +36,29 @@ def create_user_companion(db: Session, item: schemas.CompanionCreate, user_id: i
     return db_add(db, db_companion)
 
 
-def get_events(db: Session, current_user: schemas.User, skip: int = 0, limit: int = 100):
-    #    db_event = db.query(models.event_view)
-    #     q = db.query(models.Event).join(models.Companion, models.Event.companion_id == models.Companion.companion)
-    stmt = text("""SELECT
-  "Event".companion_id,
-  "Event".user_id,
-  "Event".name as name,
-  "Event".event_id,
-  "Event".notes,
-  qr_code,
-  priority,
-  frequency,
-  last_trigger,
-  next_trigger,
-  action,
-  "Companion".name as companion_name,
-  companion_type,
-  image
-FROM "Event"
-INNER JOIN "Companion" on "Companion".companion = "Event".companion_id;""")
+def get_events(db: Session, current_user: schemas.User, event_id):
+    sql = f"""
+            SELECT
+                  "Event".companion_id, "Event".user_id, "Event".name as name,  "Event".event_id, "Event".notes,
+                  qr_code, priority, frequency, last_trigger, next_trigger, action, "Companion".name as companion_name,
+                  companion_type, image
+            FROM "Event"
+                INNER JOIN "Companion" on "Companion".companion = "Event".companion_id and 
+                                                    "Event".user_id = {current_user.user_id} """
+    f = f'and "Event".event_id = {event_id}'
+    if event_id:
+        sql += f
+    stmt = text(sql)
     result = db.execute(stmt).all()
     r = []
     for row in result:
-        #     # companion_id, user_id, eventname, qr_code, priority, frequency, last_trigger, next_trigger, action,
-        #     #        companionname, companion_type, image
         r.append(row._mapping)
     return r
 
 
 def create_event(db: Session, item: schemas.EventCreate, companion_id: int, username_id: int):
-    companion = db.query(models.Companion).where(models.Companion.companion == companion_id).first()
-    db_event = models.Event(**item.dict(), companion_id=companion_id, user_id=username_id, update=True,
-                            companion_name=companion.name, companion_type=companion.companion_type,
-                            image=companion.image)
+    # companion = db.query(models.Companion).where(models.Companion.companion == companion_id).first()
+    db_event = models.Event(**item.dict(), companion_id=companion_id, user_id=username_id, update=True)
     return db_add(db, db_event)
 
 

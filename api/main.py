@@ -82,14 +82,15 @@ def read_companions(skip: int = 0, limit: int = 100, current_user: schemas.User 
          responses={401: {"model": schemas.AuthError}})
 def get_events(skip: int = 0, limit: int = 100, current_user: schemas.User = Depends(auth.get_current_user),
                db: Session = Depends(get_autocommit_db)):
-    return crud.get_events(db=db, current_user=current_user, skip=skip, limit=limit)
+    return crud.get_events(db=db, current_user=current_user)
 
 
-@app.post("/companions/event/", tags=["Event"], response_model=schemas.Event,
+@app.post("/companions/event/", tags=["Event"], response_model=schemas.EventJoin,
           summary="Create a new `event` for `companion`", responses={401: {"model": schemas.AuthError}})
 def create_event(companion_id: int, item: schemas.EventCreate, db: Session = Depends(get_db),
                  current_user: schemas.User = Depends(auth.get_current_user)):
-    return crud.create_event(db=db, item=item, companion_id=companion_id, username_id=current_user.user_id)
+    event_id = crud.create_event(db=db, item=item, companion_id=companion_id, username_id=current_user.user_id).event_id
+    return crud.get_events(db=db, current_user=current_user, event_id=event_id)[0]
 
 
 @app.put("/companions/event/", tags=["Event"], response_model=schemas.UpdateEvent, summary="Modify event",
