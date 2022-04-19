@@ -42,7 +42,10 @@ def db_add(db: Session, item):
         msg = {"error": "Database validation error"}
         if not production:
             msg["db_msg"] = e.args[0]
-
+            return JSONResponse(
+                status_code=422,
+                content=msg,
+            )
     db.refresh(item)
     return item
 
