@@ -57,7 +57,7 @@ def create_companion_for_user(item: schemas.CompanionCreate, db: Session = Depen
 @app.put("/users/companions/", response_model=schemas.UpdateCompanion, tags=["Companion"], summary="Modify a companion",
          responses={403: {"model": schemas.ModifyRowError, "description": "Database validation error"},
                     401: {"model": schemas.AuthError}})
-def modify_companion(companion_id: int, item: schemas.CompanionCreate, db: Session = Depends(get_db),
+def modify_companion(companion_id: int, item: schemas.CompanionCreate, db: Session = Depends(get_autocommit_db),
                      _: schemas.User = Depends(auth.get_current_user)):
     return crud.modify_companion(db=db, companion_id=companion_id, item=item)
 
@@ -77,10 +77,11 @@ def read_companions(skip: int = 0, limit: int = 100, current_user: schemas.User 
     return crud.get_companions(db=db, current_user=current_user, skip=skip, limit=limit)
 
 
-@app.get("/companions/event/", response_model=List[schemas.Event], tags=["Event"], summary="Get all events for User",
+@app.get("/companions/event/", response_model=List[schemas.EventJoin], tags=["Event"],
+         summary="Get all events for User",
          responses={401: {"model": schemas.AuthError}})
 def get_events(skip: int = 0, limit: int = 100, current_user: schemas.User = Depends(auth.get_current_user),
-               db: Session = Depends(get_db)):
+               db: Session = Depends(get_autocommit_db)):
     return crud.get_events(db=db, current_user=current_user, skip=skip, limit=limit)
 
 

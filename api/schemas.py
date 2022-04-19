@@ -78,6 +78,12 @@ class Event(EventBase):
         orm_mode = True
 
 
+class EventJoin(Event):
+    companion_name: str
+    companion_type: CompanionType
+    image: str
+
+
 class UserBase(BaseModel):
     username: str
 

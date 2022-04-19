@@ -1,4 +1,4 @@
-from sqlalchemy import update
+from sqlalchemy import update, text
 from sqlalchemy.orm import Session
 
 from api import models, schemas
@@ -38,8 +38,32 @@ def create_user_companion(db: Session, item: schemas.CompanionCreate, user_id: i
 
 
 def get_events(db: Session, current_user: schemas.User, skip: int = 0, limit: int = 100):
-    db_event = db.query(models.Event).filter(models.Event.user_id == current_user.user_id)
-    return db_event.offset(skip).limit(limit).all()
+    #    db_event = db.query(models.event_view)
+    #     q = db.query(models.Event).join(models.Companion, models.Event.companion_id == models.Companion.companion)
+    stmt = text("""SELECT
+  "Event".companion_id,
+  "Event".user_id,
+  "Event".name as name,
+  "Event".event_id,
+  "Event".notes,
+  qr_code,
+  priority,
+  frequency,
+  last_trigger,
+  next_trigger,
+  action,
+  "Companion".name as companion_name,
+  companion_type,
+  image
+FROM "Event"
+INNER JOIN "Companion" on "Companion".companion = "Event".companion_id;""")
+    result = db.execute(stmt).all()
+    r = []
+    for row in result:
+        #     # companion_id, user_id, eventname, qr_code, priority, frequency, last_trigger, next_trigger, action,
+        #     #        companionname, companion_type, image
+        r.append(row._mapping)
+    return r
 
 
 def create_event(db: Session, item: schemas.EventCreate, companion_id: int, username_id: int):
