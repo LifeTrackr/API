@@ -96,7 +96,7 @@ def create_event(companion_id: int, item: schemas.EventCreate, db: Session = Dep
 @app.put("/companions/event/", tags=["Event"], response_model=schemas.UpdateEvent, summary="Modify event",
          responses={401: {"model": schemas.AuthError}})
 def modify_event(event_id: int, item: schemas.EventBase, _: schemas.User = Depends(auth.get_current_user),
-                 db: Session = Depends(get_db)):
+                 db: Session = Depends(get_autocommit_db)):
     return crud.modify_event(db=db, item=item, event_id=event_id)
 
 
