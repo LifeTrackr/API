@@ -82,7 +82,7 @@ def read_companions(skip: int = 0, limit: int = 100, current_user: schemas.User 
          responses={401: {"model": schemas.AuthError}})
 def get_events(skip: int = 0, limit: int = 100, current_user: schemas.User = Depends(auth.get_current_user),
                db: Session = Depends(get_autocommit_db)):
-    return crud.get_events(db=db, current_user=current_user)
+    return crud.get_events(db=db, current_user=current_user, event_id=None)
 
 
 @app.post("/companions/event/", tags=["Event"], response_model=schemas.EventJoin,
