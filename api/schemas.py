@@ -28,7 +28,7 @@ class CompanionBase(BaseModel):
     name: str
     companion_type: CompanionType
     notes: str
-    image: str
+    # image: UploadFile = File(...)
 
 
 class CompanionCreate(CompanionBase):
@@ -41,6 +41,11 @@ class Companion(CompanionBase):
 
     class Config:
         orm_mode = True
+
+
+class UploadCompanionImage(BaseModel):
+    message: str = "Error Uploading image"
+    uploaded: bool = False
 
 
 class PriorityType(str, Enum):

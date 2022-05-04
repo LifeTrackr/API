@@ -1,7 +1,10 @@
+import base64
+import io
 from os import getenv
 from typing import List
 
-from fastapi import Depends, FastAPI, HTTPException
+from PIL import Image
+from fastapi import Depends, FastAPI, HTTPException, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import func, update, delete
 from sqlalchemy.orm import Session
@@ -12,7 +15,8 @@ import api.crud
 import api.database
 from api import crud, models, schemas
 from api import database
-from api.utils import auth
+from api.utils import auth, upload_validate
+from api.utils.upload_validate import upload_image
 from definitions import get_db, get_autocommit_db
 
 models.Base.metadata.create_all(bind=database.engine)
@@ -49,9 +53,34 @@ def test_token(current_user: schemas.User = Depends(auth.get_current_user)):
 
 @app.post("/users/companions/", response_model=schemas.Companion, tags=["Companion"], summary="Create a new companion",
           responses={401: {"model": schemas.AuthError}})
-def create_companion_for_user(item: schemas.CompanionCreate, db: Session = Depends(get_db),
+def create_companion_for_user(item: schemas.CompanionCreate,
+                              db: Session = Depends(get_db),
                               current_user: schemas.User = Depends(auth.get_current_user)):
     return crud.create_user_companion(db=db, item=item, user_id=current_user.user_id)
+
+
+@app.post("/users/companions/upload_image/{companion_id}", tags=["Companion"], summary="Upload image for companion ",
+          response_model=schemas.UploadCompanionImage)
+async def upload_companion_image(companion_id: int, file: UploadFile = File(...)):
+    contents = await file.read()
+    file_validated = upload_validate.validate_image(contents, file)
+    if file_validated:
+        try:
+            with Image.open(io.BytesIO(contents)) as im:
+                await file.close()
+                im = im.resize((128, 128))
+                im.convert("RGB")
+                buffered = io.BytesIO()
+                im.save(buffered, format="png")
+                img_str = base64.b64encode(buffered.getvalue())
+                upload_image(img_str, companion_id)
+                return {"message": f"Uploaded image to companion {companion_id}", "uploaded": True}
+        except OSError as e:
+            # TODO: Add logging
+            return {}  # don't return OS error to user, be unspecific (default pydamic class)
+    else:
+        await file.close()
+        return {"message:": file_validated}
 
 
 @app.put("/users/companions/", response_model=schemas.UpdateCompanion, tags=["Companion"], summary="Modify a companion",

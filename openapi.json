@@ -278,9 +278,9 @@
         'operationId': 'create_companion_for_user_users_companions__post',
         'requestBody': {
           'content': {
-            'application/json': {
+            'multipart/form-data': {
               'schema': {
-                '$ref': '#/components/schemas/CompanionCreate'
+                '$ref': '#/components/schemas/Body_create_companion_for_user_users_companions__post'
               }
             }
           },
@@ -1000,6 +1000,24 @@
           }
         }
       },
+      'Body_create_companion_for_user_users_companions__post': {
+        'title': 'Body_create_companion_for_user_users_companions__post',
+        'required': [
+          'item',
+          'image'
+        ],
+        'type': 'object',
+        'properties': {
+          'item': {
+            '$ref': '#/components/schemas/CompanionCreate'
+          },
+          'image': {
+            'title': 'Image',
+            'type': 'string',
+            'format': 'binary'
+          }
+        }
+      },
       'Body_login_token__post': {
         'title': 'Body_login_token__post',
         'required': [
@@ -1061,7 +1079,8 @@
           },
           'image': {
             'title': 'Image',
-            'type': 'string'
+            'type': 'string',
+            'format': 'binary'
           },
           'user_id': {
             'title': 'User Id',
@@ -1096,7 +1115,8 @@
           },
           'image': {
             'title': 'Image',
-            'type': 'string'
+            'type': 'string',
+            'format': 'binary'
           }
         }
       },
