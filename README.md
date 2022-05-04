@@ -21,14 +21,6 @@ To setup environment:
 
 `uvicorn api.main:app --reload`
 
-### Docker
-
-## Build
-
-`docker build -t lifetrackr/api .`
-
-## Run
-
-`docker run -p 80:80 lifetrackr/api`
+`python api/main.py`
 
 
