@@ -1,3 +1,4 @@
+from random import randrange
 from typing import Union
 
 import boto3
@@ -32,4 +33,5 @@ def get_image(companion_id: int):
         return obj.get()['Body'].read().decode('utf-8')
     except ClientError as ex:
         if ex.response['Error']['Code'] == 'NoSuchKey':
-            return ""
+            obj = s3.Object(bucket_name, f'default{randrange(1, 5)}.png')
+            return obj.get()['Body'].read().decode('utf-8')
