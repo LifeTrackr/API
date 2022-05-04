@@ -1,8 +1,10 @@
+from fastapi import HTTPException
 from sqlalchemy import update, text
 from sqlalchemy.orm import Session
 
 from api import models, schemas
 from api.database import db_add, modify_row
+from api.utils import s3_interface
 from api.utils.auth import get_password_hash
 
 
@@ -70,3 +72,19 @@ def modify_event(db: Session, item: schemas.EventBase, event_id: int):
 def get_event_logs(db: Session, user_id: int, skip: int = 0, limit: int = 100):
     db_logs = db.query(models.EventLogs).filter(models.EventLogs.user_id == user_id)
     return db_logs.offset(skip).limit(limit).all()
+
+
+def get_companion_image(companion_id: int, db: Session, current_user: schemas.User):
+    rows = get_companions(db=db, current_user=current_user)
+    for row in rows:
+        if row.companion == companion_id:
+            return {"companion_id": companion_id, "base64_image": s3_interface.get_image(row.companion)}
+    raise HTTPException(status_code=404, detail="Companion not found")
+
+
+def get_all_companion_images(db: Session, current_user: schemas.User):
+    rows = get_companions(db=db, current_user=current_user)
+    result = []
+    for row in rows:
+        result.append({"companion_id": row.companion, "base64_image": s3_interface.get_image(row.companion)})
+    return result

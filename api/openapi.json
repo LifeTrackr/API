@@ -377,6 +377,109 @@
         }
       }
     },
+    '/companions/image/{companion_id}': {
+      'get': {
+        'tags': [
+          'Companion'
+        ],
+        'summary': 'Get Companion image',
+        'operationId': 'get_companion_image_companions_image__companion_id__get',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'Companion Id',
+              'type': 'integer'
+            },
+            'name': 'companion_id',
+            'in': 'path'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/CompanionImageOut'
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '404': {
+            'description': 'The item was not found'
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
+    '/companions/images/{companion_id}': {
+      'get': {
+        'tags': [
+          'Companion'
+        ],
+        'summary': 'Get All companion images by user',
+        'operationId': 'get_companion_image_companions_images__companion_id__get',
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  'title': 'Response Get Companion Image Companions Images  Companion Id  Get',
+                  'type': 'array',
+                  'items': {
+                    '$ref': '#/components/schemas/CompanionImageOut'
+                  }
+                }
+              }
+            }
+          },
+          '401': {
+            'description': 'Unauthorized',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/AuthError'
+                }
+              }
+            }
+          },
+          '404': {
+            'description': 'The item was not found'
+          }
+        },
+        'security': [
+          {
+            'OAuth2PasswordBearer': []
+          }
+        ]
+      }
+    },
     '/users/companions/{companion_id}/': {
       'delete': {
         'tags': [
@@ -1171,6 +1274,24 @@
         ],
         'type': 'string',
         'description': 'An enumeration.'
+      },
+      'CompanionImageOut': {
+        'title': 'CompanionImageOut',
+        'required': [
+          'companion_id',
+          'base64_image'
+        ],
+        'type': 'object',
+        'properties': {
+          'companion_id': {
+            'title': 'Companion Id',
+            'type': 'integer'
+          },
+          'base64_image': {
+            'title': 'Base64 Image',
+            'type': 'string'
+          }
+        }
       },
       'CompanionType': {
         'title': 'CompanionType',

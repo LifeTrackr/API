@@ -15,8 +15,8 @@ import api.crud
 import api.database
 from api import crud, models, schemas
 from api import database
-from api.utils import auth, upload_validate
-from api.utils.upload_validate import upload_image
+from api.utils import auth, s3_interface
+from api.utils.s3_interface import upload_image
 from definitions import get_db, get_autocommit_db
 
 models.Base.metadata.create_all(bind=database.engine)
@@ -63,7 +63,7 @@ def create_companion_for_user(item: schemas.CompanionCreate,
           response_model=schemas.UploadCompanionImage)
 async def upload_companion_image(companion_id: int, file: UploadFile = File(...)):
     contents = await file.read()
-    file_validated = upload_validate.validate_image(contents, file)
+    file_validated = s3_interface.validate_image(contents, file)
     if file_validated:
         try:
             with Image.open(io.BytesIO(contents)) as im:
@@ -81,6 +81,22 @@ async def upload_companion_image(companion_id: int, file: UploadFile = File(...)
     else:
         await file.close()
         return {"message:": file_validated}
+
+
+@app.get("/companions/image/{companion_id}", response_model=schemas.CompanionImageOut, summary="Get Companion image",
+         responses={401: {"model": schemas.AuthError}, 404: {"description": "The item was not found"}},
+         tags=["Companion"])
+async def get_companion_image(companion_id: int, db: Session = Depends(get_db),
+                              current_user: schemas.User = Depends(auth.get_current_user)):
+    return crud.get_companion_image(companion_id=companion_id, db=db, current_user=current_user)
+
+
+@app.get("/companions/images/{companion_id}", response_model=List[schemas.CompanionImageOut], tags=["Companion"],
+         summary="Get All companion images by user", responses={401: {"model": schemas.AuthError},
+                                                                404: {"description": "The item was not found"}})
+async def get_companion_image(db: Session = Depends(get_db),
+                              current_user: schemas.User = Depends(auth.get_current_user)):
+    return crud.get_all_companion_images(db=db, current_user=current_user)
 
 
 @app.put("/users/companions/", response_model=schemas.UpdateCompanion, tags=["Companion"], summary="Modify a companion",

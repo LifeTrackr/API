@@ -48,6 +48,11 @@ class UploadCompanionImage(BaseModel):
     uploaded: bool = False
 
 
+class CompanionImageOut(BaseModel):
+    companion_id: int
+    base64_image: str
+
+
 class PriorityType(str, Enum):
     l = "l"  # low
     m = "m"  # medium

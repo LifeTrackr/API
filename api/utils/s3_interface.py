@@ -1,6 +1,7 @@
 from typing import Union
 
 import boto3
+from botocore.exceptions import ClientError
 from fastapi import UploadFile
 
 
@@ -22,4 +23,13 @@ def upload_image(image_base64: bytes, companion_id: int) -> str:  #
     obj_name = f"id{companion_id}.png"
     obj = s3.Object(bucket_name, obj_name)
     obj.put(Body=image_base64)
-    return obj_name
+    print()
+
+
+def get_image(companion_id: int):
+    obj = s3.Object(bucket_name, f'id{companion_id}.png')
+    try:
+        return obj.get()['Body'].read().decode('utf-8')
+    except ClientError as ex:
+        if ex.response['Error']['Code'] == 'NoSuchKey':
+            return ""
