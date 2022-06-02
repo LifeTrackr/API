@@ -20,11 +20,11 @@ s3 = boto3.resource('s3')
 bucket_name = 'lifetrackr-bucket1'
 
 
-def upload_image(image_base64: bytes, companion_id: int) -> str:  #
+def upload_image(image_base64: bytes, companion_id: int) -> bool:  #
     obj_name = f"id{companion_id}.png"
     obj = s3.Object(bucket_name, obj_name)
     obj.put(Body=image_base64)
-    print()
+    return True
 
 
 def get_image(companion_id: int):

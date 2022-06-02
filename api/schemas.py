@@ -28,7 +28,6 @@ class CompanionBase(BaseModel):
     name: str
     companion_type: CompanionType
     notes: str
-    # image: UploadFile = File(...)
 
 
 class CompanionCreate(CompanionBase):
@@ -117,6 +116,10 @@ class TokenData(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+class CompanionOwnership(BaseModel):
+    ownership: bool
 
 
 class ModifyRow(BaseModel):

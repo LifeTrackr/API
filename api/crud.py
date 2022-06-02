@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from api import models, schemas
 from api.database import db_add, modify_row
-from api.utils import s3_interface
+from api.utils import s3_interface, auth
 from api.utils.auth import get_password_hash
 
 
@@ -23,9 +23,8 @@ def modify_user(db: Session, user_id: int, new_password: str):
     return modify_row(stmt=stmt, _id=user_id, table=models.User, db=db)
 
 
-def get_companions(db: Session, current_user: schemas.User, skip: int = 0, limit: int = 100):
-    return db.query(models.Companion).filter(models.Companion.user_id == current_user.user_id).offset(skip).limit(
-        limit).all()
+def get_companions(db: Session, current_user: schemas.User):
+    return db.query(models.Companion).filter(models.Companion.user_id == current_user.user_id).all()
 
 
 def modify_companion(db: Session, companion_id: int, item: schemas.CompanionCreate):
@@ -48,6 +47,8 @@ def get_events(db: Session, current_user: schemas.User, event_id):
                 INNER JOIN "Companion" on "Companion".companion = "Event".companion_id and 
                                                     "Event".user_id = {current_user.user_id} """
     f = f'and "Event".event_id = {event_id}'
+    a = db.query(models.Event).join(models.Companion)
+
     if event_id:
         sql += f
     stmt = text(sql)
@@ -88,3 +89,10 @@ def get_all_companion_images(db: Session, current_user: schemas.User):
     for row in rows:
         result.append({"companion_id": row.companion, "base64_image": s3_interface.get_image(row.companion)})
     return result
+
+
+def companion_ownership(companion_id: int, token: str, db: Session):
+    q = db.query(models.Companion).filter(models.Companion.companion == companion_id).all()
+    if q and auth.test_token(token=token, db=db):
+        return q[0].companion == companion_id
+    return False

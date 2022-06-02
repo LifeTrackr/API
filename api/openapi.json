@@ -544,28 +544,6 @@
         ],
         'summary': 'Get all Companions for user',
         'operationId': 'read_companions_companions__get',
-        'parameters': [
-          {
-            'required': False,
-            'schema': {
-              'title': 'Skip',
-              'type': 'integer',
-              'default': 0
-            },
-            'name': 'skip',
-            'in': 'query'
-          },
-          {
-            'required': False,
-            'schema': {
-              'title': 'Limit',
-              'type': 'integer',
-              'default': 100
-            },
-            'name': 'limit',
-            'in': 'query'
-          }
-        ],
         'responses': {
           '200': {
             'description': 'Successful Response',
@@ -587,16 +565,6 @@
               'application/json': {
                 'schema': {
                   '$ref': '#/components/schemas/AuthError'
-                }
-              }
-            }
-          },
-          '422': {
-            'description': 'Validation Error',
-            'content': {
-              'application/json': {
-                'schema': {
-                  '$ref': '#/components/schemas/HTTPValidationError'
                 }
               }
             }
@@ -1140,6 +1108,57 @@
           }
         }
       }
+    },
+    '/token/companion_ownership': {
+      'post': {
+        'tags': [
+          'Authentication'
+        ],
+        'summary': 'Test access token for companion ownership',
+        'operationId': 'companion_ownership_token_companion_ownership_post',
+        'parameters': [
+          {
+            'required': True,
+            'schema': {
+              'title': 'Companion Id',
+              'type': 'integer'
+            },
+            'name': 'companion_id',
+            'in': 'query'
+          },
+          {
+            'required': True,
+            'schema': {
+              'title': 'Token',
+              'type': 'string'
+            },
+            'name': 'token',
+            'in': 'query'
+          }
+        ],
+        'responses': {
+          '200': {
+            'description': 'Successful Response',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/CompanionOwnership'
+                }
+              }
+            }
+          },
+          '422': {
+            'description': 'Validation Error',
+            'content': {
+              'application/json': {
+                'schema': {
+                  '$ref': '#/components/schemas/HTTPValidationError'
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   'components': {
@@ -1290,6 +1309,19 @@
           'base64_image': {
             'title': 'Base64 Image',
             'type': 'string'
+          }
+        }
+      },
+      'CompanionOwnership': {
+        'title': 'CompanionOwnership',
+        'required': [
+          'ownership'
+        ],
+        'type': 'object',
+        'properties': {
+          'ownership': {
+            'title': 'Ownership',
+            'type': 'boolean'
           }
         }
       },

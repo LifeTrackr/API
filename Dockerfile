@@ -1,17 +1,17 @@
-FROM python:3.7-slim
+FROM python:3.7
 
-WORKDIR /code
-
-#
-COPY ./requirements.txt /code/requirements.txt
+WORKDIR /fastapi
 
 #
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+COPY ./requirements.txt /fastapi/requirements.txt
 
 #
-COPY ./api /code/
-COPY ./definitions.py /code
+RUN pip install --no-cache-dir --upgrade -r /fastapi/requirements.txt
+#
+COPY ./api /fastapi/api
+COPY ./definitions.py /fastapi
+COPY ./.env-prod /fastapi
 
 #
-CMD exec gunicorn --bind :$PORT --workers 1 --worker-class uvicorn.workers.UvicornWorker  --threads 8 api.main:app
-#ENTRYPOINT ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "80"]
+
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "80"]

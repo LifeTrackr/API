@@ -7,7 +7,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from starlette.responses import JSONResponse
 
-load_dotenv()
+if os.environ.get("PROD"):
+    load_dotenv(dotenv_path=".env-prod")
+else:
+    load_dotenv()
 try:
     db_user = os.environ["DB_USER"]
     db_pass = os.environ["DB_PASS"]

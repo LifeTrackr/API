@@ -117,9 +117,8 @@ def delete_companion(companion_id: int, _: schemas.User = Depends(auth.get_curre
 
 @app.get("/companions/", response_model=List[schemas.Companion], summary="Get all Companions for user",
          responses={401: {"model": schemas.AuthError}}, tags=["Companion"])
-def read_companions(skip: int = 0, limit: int = 100, current_user: schemas.User = Depends(auth.get_current_user),
-                    db: Session = Depends(get_db)):
-    return crud.get_companions(db=db, current_user=current_user, skip=skip, limit=limit)
+def read_companions(current_user: schemas.User = Depends(auth.get_current_user), db: Session = Depends(get_db)):
+    return crud.get_companions(db=db, current_user=current_user)
 
 
 @app.get("/companions/event/", response_model=List[schemas.EventJoin], tags=["Event"],
@@ -190,10 +189,16 @@ def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = 
     return auth.login_for_access_token(form_data=form_data, db=db)
 
 
+@app.post("/token/companion_ownership", response_model=schemas.CompanionOwnership, tags=["Authentication"],
+          summary="Test access token for companion ownership")
+def companion_ownership(companion_id: int, token: str, db: Session = Depends(get_db)):
+    return {"ownership": crud.companion_ownership(db=db, token=token, companion_id=companion_id)}
+
+
 if getenv("PROD") == "FALSE":
     print("WARNING: in production")
     print(app.openapi(), file=open('openapi.json', 'w'))
 
 if __name__ == "__main__":
     reload = getenv("PROD") == "FALSE"
-    run("main:app", host="0.0.0.0", port=8000, reload=reload)
+    run("main:app", host="0.0.0.0", port=8001, reload=reload)
