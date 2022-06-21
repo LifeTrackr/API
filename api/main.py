@@ -15,12 +15,13 @@ import api.crud
 import api.database
 from api import crud, models, schemas
 from api import database
-from api.utils import auth, s3_interface
+from api.utils import auth, s3_interface, cache
 from api.utils.s3_interface import upload_image
-from definitions import get_db, get_autocommit_db
+from get_dbs import get_db, get_autocommit_db
 
 models.Base.metadata.create_all(bind=database.engine)
 app = FastAPI()
+companion_cache = cache.CompanionTypeCache(database.SessionLocal)
 
 
 @app.get("/users/", response_model=List[schemas.User], tags=["User"], summary="Get all users in database")
@@ -53,10 +54,12 @@ def test_token(current_user: schemas.User = Depends(auth.get_current_user)):
 
 @app.post("/users/companions/", response_model=schemas.Companion, tags=["Companion"], summary="Create a new companion",
           responses={401: {"model": schemas.AuthError}})
-def create_companion_for_user(item: schemas.CompanionCreate,
-                              db: Session = Depends(get_db),
+def create_companion_for_user(item: schemas.CompanionCreate, db: Session = Depends(get_db),
                               current_user: schemas.User = Depends(auth.get_current_user)):
-    return crud.create_user_companion(db=db, item=item, user_id=current_user.user_id)
+    result = crud.create_user_companion(db=db, item=item, user_id=current_user.user_id)
+    if type(result) == models.Companion:
+        result.companion_type = companion_cache[result.companion_type]  # hack to map companion type id to a name
+    return result
 
 
 @app.post("/users/companions/upload_image/{companion_id}", tags=["Companion"], summary="Upload image for companion ",
@@ -76,8 +79,7 @@ async def upload_companion_image(companion_id: int, file: UploadFile = File(...)
                 upload_image(img_str, companion_id)
                 return {"message": f"Uploaded image to companion {companion_id}", "uploaded": True}
         except OSError as e:
-            # TODO: Add logging
-            return {}  # don't return OS error to user, be unspecific (default pydamic class)
+            print(e)
     else:
         await file.close()
         return {"message:": file_validated}
@@ -124,9 +126,9 @@ def read_companions(current_user: schemas.User = Depends(auth.get_current_user),
 @app.get("/companions/event/", response_model=List[schemas.EventJoin], tags=["Event"],
          summary="Get all events for User",
          responses={401: {"model": schemas.AuthError}})
-def get_events(skip: int = 0, limit: int = 100, current_user: schemas.User = Depends(auth.get_current_user),
+def get_events(current_user: schemas.User = Depends(auth.get_current_user),
                db: Session = Depends(get_autocommit_db)):
-    return crud.get_events(db=db, current_user=current_user, event_id=None)
+    return crud.get_events(db=db, current_user=current_user)
 
 
 @app.post("/companions/event/", tags=["Event"], response_model=schemas.EventJoin,
@@ -134,7 +136,7 @@ def get_events(skip: int = 0, limit: int = 100, current_user: schemas.User = Dep
 def create_event(companion_id: int, item: schemas.EventCreate, db: Session = Depends(get_db),
                  current_user: schemas.User = Depends(auth.get_current_user)):
     event_id = crud.create_event(db=db, item=item, companion_id=companion_id, username_id=current_user.user_id).event_id
-    return crud.get_events(db=db, current_user=current_user, event_id=event_id)[0]
+    return crud.get_event(db=db, current_user=current_user, event_id=event_id)
 
 
 @app.put("/companions/event/", tags=["Event"], response_model=schemas.UpdateEvent, summary="Modify event",
@@ -196,8 +198,9 @@ def companion_ownership(companion_id: int, token: str, db: Session = Depends(get
 
 
 if getenv("PROD") == "FALSE":
-    print("WARNING: in production")
     print(app.openapi(), file=open('openapi.json', 'w'))
+else:
+    print("WARNING: in production")
 
 if __name__ == "__main__":
     reload = getenv("PROD") == "FALSE"

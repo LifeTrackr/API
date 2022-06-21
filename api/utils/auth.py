@@ -11,7 +11,7 @@ from starlette import status
 
 from api import models
 from api.schemas import User, TokenData
-from definitions import get_db
+from get_dbs import get_db
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

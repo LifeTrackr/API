@@ -1,40 +1,23 @@
-import os
-
 import sqlalchemy.exc
-from dotenv import load_dotenv
 from sqlalchemy import create_engine, engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from starlette.responses import JSONResponse
 
-if os.environ.get("PROD"):
-    load_dotenv(dotenv_path=".env-prod")
-else:
-    load_dotenv()
-try:
-    db_user = os.environ["DB_USER"]
-    db_pass = os.environ["DB_PASS"]
-    db_name = os.environ["DB_NAME"]
-    db_host = os.environ["DB_HOST"]
-    production = True if os.getenv("PROD") is True else False
-except KeyError:
-    raise KeyError("Error: Missing env file")
-host_args = db_host.split(":")
+from .utils.load_env import Env
+
+env = Env()
+host_args = env.db_host.split(":")
 if len(host_args) == 1:
-    db_hostname, db_port = db_host, os.environ["DB_PORT"]
+    db_hostname, db_port = env.db_host, env.db_port
 elif len(host_args) == 2:
     db_hostname, db_port = host_args[0], int(host_args[1])
 else:
     raise KeyError("Error: Host args > 2")
-try:
-    db_url = os.environ.get('DATABASE_URL')
-    if not db_url:
-        db_url = os.environ.get('CONNECTION_STRING')
-    engine = create_engine(db_url.replace('postgres://', 'postgresql://'))
-except Exception as e:
-    print(e)
-    engine = create_engine(engine.url.URL.create(drivername="postgresql+psycopg2", username=db_user, password=db_pass,
-                                                 host=db_hostname, port=db_port, database=db_name))
+
+engine = create_engine(engine.url.URL.create(drivername="postgresql+psycopg2", username=env.db_user, port=db_port,
+                                             password=env.db_pass, host=env.db_host, database=env.db_name))
+print(f"[info] host {env.db_host}")
 
 
 def db_add(db: Session, item):
@@ -43,7 +26,7 @@ def db_add(db: Session, item):
         db.commit()
     except Exception as e:
         msg = {"error": "Database validation error"}
-        if not production:
+        if not env.production:
             msg["db_msg"] = e.args[0]
             return JSONResponse(
                 status_code=422,
@@ -66,7 +49,7 @@ def modify_row(stmt, _id, table, db: Session):
         result = db.execute(stmt)
     except sqlalchemy.exc.DataError as e:
         message = {"error": "Database validation error"}
-        if not production:
+        if not env.production:
             message["db_msg"] = e.statement
         return JSONResponse(
             status_code=403,

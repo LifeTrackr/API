@@ -18,10 +18,11 @@ class CompanionEvents(str, Enum):
 
 
 class CompanionType(str, Enum):
-    plant = "plant"
-    dog = "dog"
-    cat = "cat"
-    reptile = "reptile"
+    _1 = "dog"
+    _2 = "cat"
+    _3 = "reptile"
+    _4 = "plant"
+    _5 = "bird"
 
 
 class CompanionBase(BaseModel):
@@ -85,12 +86,14 @@ class Event(EventBase):
 
 class EventJoin(Event):
     companion_name: str
-    companion_type: CompanionType
-    image: str
+    companion_type: str
+    # image: str
 
 
 class UserBase(BaseModel):
     username: str
+    first_name: str
+    last_name: str
 
 
 class UserCreate(UserBase):

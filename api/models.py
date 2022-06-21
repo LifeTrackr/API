@@ -6,23 +6,31 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.types import Enum
 
 from .database import Base
-from .schemas import CompanionEvents, CompanionType, PriorityType
+from .schemas import CompanionEvents, PriorityType
 
 
 class User(Base):
     __tablename__ = "User"
     user_id = Column(Integer, primary_key=True)
     username = Column(String(10))
+    first_name = Column(String(15))
+    last_name = Column(String(25))
     hashed_password = Column(String(64))
     is_active = Column(Boolean)
     companion = relationship("Companion")
+
+
+class CompanionTypes(Base):
+    __tablename__ = "Companion_Types"
+    id = Column(Integer, primary_key=True)
+    type_name = Column(String)
 
 
 class Companion(Base):
     __tablename__ = "Companion"
     companion = Column(Integer, primary_key=True)
     name = Column(String(10))
-    companion_type = Column(Enum(CompanionType, name="companion types"))
+    companion_type = Column(Integer, ForeignKey("Companion_Types.id"))
     notes = Column(String(255))
     image = Column(String(255))
     user_id = Column(Integer, ForeignKey("User.user_id"))
