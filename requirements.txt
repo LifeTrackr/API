@@ -46,7 +46,7 @@ pytest==7.1.1
 pytest-depends==1.0.1
 python-dateutil==2.8.2
 python-dotenv==0.19.2
-python-jose==3.3.0
+python-jose==3.4.0
 python-multipart==0.0.5
 PyYAML==5.4.1
 requests==2.27.1
